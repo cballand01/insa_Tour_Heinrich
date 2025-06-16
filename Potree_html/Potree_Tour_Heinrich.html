@@ -8,7 +8,7 @@
 
   
   <!-- LIGNE À AJOUTER POUR LE FAVICON -->
-  <link rel="icon" href="https://storage.googleapis.com/projet-potree-sncf/Images/Logo/Logo_LGV_Simple.png" type="image/png">
+  <link rel="icon" href="https://storage.googleapis.com/insa_test/Images_Logo/insa%20(1).png" type="image/png">
 
   <!-- Chargement des polices Google -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -141,9 +141,9 @@
         <div class="accordion-header">Informations sur le projet</div>
         <div class="accordion-content">
           <p>
-            Le projet a été mené par Charles Balland, dans le cadre de son projet de fin d’études d’ingénieur topographe.  
-            Cette initiative met à l’honneur le poste d’aiguillage de la première LGV française, resté en service jusqu’à fin 2024 avant son transfert à Lyon.  
-            Une plateforme de visualisation et de sauvegarde numérique du poste désormais fermé permet d’explorer son nuage de points, de parcourir ses modèles 3D et de consulter toutes les informations complémentaires.
+            Les tours des Ponts Couverts de Strasbourg demeurent largement méconnues d’un point de vue archéologique et historique. Un projet a été initié en 2019 afin de résorber le déficit de connaissances sur ces ouvrages emblématiques du patrimoine monumental et touristique de Strasbourg. L’INSA Strasbourg participe à ce projet en partenariat avec la DRAC Grand-Est et l’Eurométropole de Strasbourg.
+
+            Lisa Urfer et François Potentini, étudiant·es en 5ème année de la spécialité topographie à l’INSA Strasbourg, ont participé à la numérisation 3D de la tour Heinrich dans le cadre de leur PRT.  Ils ont collaboré avec Maxime Werlé, ingénieur d’études de la DRAC Grand-Est. Une visite virtuelle de la tour est née de leur travail et nous vous invitons à découvrir le résultat.  
           </p>
         </div>
       </div>
@@ -161,29 +161,26 @@
           </p>
         </div>
       </div>
-      <!-- Accordéon pour présenter une journée au PAR -->
+      <!-- Accordéon pour présenter la visite virtuelle -->
       <div class="accordion-item">
         <div class="accordion-header">Une journée au PAR</div>
         <div class="accordion-content">
           <p>
-           Embarquez pour une immersion exclusive au cœur du PAR de la LGV Paris-Lyon, installé au Centre Henri-Lang. Plongez dans l’effervescence du poste : suivez les opérateurs en pleine action, des échanges radio à la manipulation des aiguillages, en passant par la surveillance minutieuse des écrans de contrôle. Cette vidéo restitue la précision, la coordination et le savoir-faire qui ont rythmé la vie de ce jalon historique avant sa fermeture.
+           Découvrez la visite virtuelle réalisée à partir des numérisations 3D :
           </p>
           <!-- Miniature vidéo cliquable -->
-          <img id="videoThumbnail" src="/Potree_Sncf_Projet/build/potree/resources/images/Miniature.jpeg" alt="Miniature vidéo" style="width:100%; cursor:pointer;">
+          <img id="videoThumbnail1" src="https://storage.googleapis.com/insa_test/Videos/Ecran_video2.png" alt="Miniature vidéo" style="width:100%; cursor:pointer;">
         </div>
       </div>
-      <!-- Accordéon pour les informations sur Henri LANG -->
+      <!-- Accordéon pour présenter la présentation PRT -->
       <div class="accordion-item">
-        <div class="accordion-header">Le centre Henri LANG</div>
+        <div class="accordion-header">Une journée au PAR</div>
         <div class="accordion-content">
           <p>
-            Henri Lang, né en 1895 à Rambervillers, était un brillant ingénieur et un haut responsable de la SNCF. Figure du service public, il s’est engagé pour un réseau ferroviaire moderne et accessible.
-            Arrêté en 1944 en raison de ses origines juives, il est déporté à Auschwitz, où il est assassiné.
-            Le centre qui porte son nom honore sa mémoire, son engagement et son courage face à la barbarie.
+           Lisa Urfer et François Potentini présentent leur projet de recherche technologique : 
           </p>
-          <div style="color: #888; font-size: 0.875rem; margin-top: 0.5rem; font-style: italic;">
-            Source : Mémorial de la Shoah
-          </div>
+          <!-- Miniature vidéo cliquable -->
+          <img id="videoThumbnail2" src="https://storage.googleapis.com/insa_test/Videos/Ecran_video1.png" alt="Miniature vidéo" style="width:100%; cursor:pointer;">
         </div>
       </div>
       <!-- Accordéon pour présenter les collaborateurs -->
@@ -357,7 +354,7 @@
     
   <!-- Lien vers le site de la SNCF avec affichage du logo -->
   <a href="https://www.sncf-reseau.com/fr" target="_blank">
-    <img id="logo" src="/Potree_Sncf_Projet/build/potree/resources/images/Logo_SNCF.png" alt="Logo SNCF">
+    <img id="logo" src="https://storage.googleapis.com/insa_test/Images_Logo/Insas_logo.png" alt="Logo SNCF">
   </a>
 
   <!-- Bulle d'information globale (affichée lors du survol d'un élément de la galerie) -->
@@ -2065,45 +2062,64 @@
   </script>
 
   
-  <!-- Script pour gérer la popup vidéo -->
+  <!-- Script pour gérer la popup vidéo avec deux miniatures -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const videoThumbnail = document.getElementById('videoThumbnail');
       const videoPopup = document.getElementById('videoPopup');
       const popupVideo = document.getElementById('popupVideo');
+      const videoSource = popupVideo.querySelector('source');
       const closeVideoPopup = document.querySelector('.closeVideoPopup');
-      
+  
+      // Récupération des miniatures
+      const videoThumbnail1 = document.getElementById('videoThumbnail1');
+      const videoThumbnail2 = document.getElementById('videoThumbnail2');
+  
       // Sauvegarde des paramètres actuels du viewer
       let savedPointBudget = viewer ? viewer.pointBudget : 2000000;
       let savedUseHQ = viewer ? viewer.useHQ : false;
-      
-      // Affichage de la popup vidéo lors du clic sur la miniature
-      if(videoThumbnail){
-        videoThumbnail.addEventListener('click', function () {
-          savedPointBudget = viewer.pointBudget;
-          savedUseHQ = viewer.useHQ;
-          viewer.setPointBudget(100000);
-          viewer.useHQ = false;
-          videoPopup.style.display = 'flex';
-          popupVideo.querySelector('source').src = "https://storage.googleapis.com/projet-potree-sncf/Vid%C3%A9os/Version%20Courte%20PAR.mp4";
-          popupVideo.load();
-          popupVideo.play();
+  
+      // Fonction pour afficher une vidéo dans la popup
+      function openVideo(url) {
+        savedPointBudget = viewer.pointBudget;
+        savedUseHQ = viewer.useHQ;
+  
+        viewer.setPointBudget(100000);
+        viewer.useHQ = false;
+  
+        videoSource.src = url;
+        popupVideo.load();
+        popupVideo.play();
+        videoPopup.style.display = 'flex';
+      }
+  
+      // Gestionnaire pour la première miniature
+      if (videoThumbnail1) {
+        videoThumbnail1.addEventListener('click', function () {
+          openVideo("https://storage.googleapis.com/insa_test/Videos/Visite%20virtuelle%20de%20la%20tour%20Heinrich%20des%20Ponts%20Couverts%20de%20Strasbourg.mp4");
         });
       }
-      
+  
+      // Gestionnaire pour la deuxième miniature
+      if (videoThumbnail2) {
+        videoThumbnail2.addEventListener('click', function () {
+          openVideo("https://storage.googleapis.com/insa_test/Videos/Lisa%20Urfer%20et%20Fran%C3%A7ois%20Potentini%20pr%C3%A9sentent%20leur%20projet%20de%20recherche%20technologique.mp4");
+        });
+      }
+  
       // Fermeture de la popup vidéo et restauration des paramètres
-      if(closeVideoPopup){
+      if (closeVideoPopup) {
         closeVideoPopup.addEventListener('click', function () {
           videoPopup.style.display = 'none';
           popupVideo.pause();
           popupVideo.currentTime = 0;
-          popupVideo.querySelector('source').src = '';
+          videoSource.src = '';
           viewer.setPointBudget(savedPointBudget);
           viewer.useHQ = savedUseHQ;
         });
       }
-      
-      if(videoPopup){
+  
+      // Fermer la popup en cliquant en dehors de la vidéo
+      if (videoPopup) {
         videoPopup.addEventListener('click', function (e) {
           if (e.target === videoPopup) {
             closeVideoPopup.click();
@@ -2112,6 +2128,7 @@
       }
     });
   </script>
+
   
   <!-- Script pour gérer le zoom et le pan sur l'image de la popup -->
   <script>
