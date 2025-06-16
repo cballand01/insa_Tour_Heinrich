@@ -3,7 +3,7 @@
 <head>
   <!-- Métadonnées et configuration de la page -->
   <meta charset="utf-8">
-  <title>Salle du TCO</title>
+  <title>Tour Heinrich</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
   
@@ -353,7 +353,7 @@
   </div>
     
   <!-- Lien vers le site de la SNCF avec affichage du logo -->
-  <a href=""https://topographie.insa-strasbourg.fr/" class="logo-link" style="position: fixed; bottom: 20px; right: 20px;">
+  <a href=""https://topographie.insa-strasbourg.fr/" class="logo-link" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
     <img src="https://storage.googleapis.com/insa_test/Images_Logo/Insas_logo.png" alt="Logo" style="width: 80px; height: auto;">
   </a>
 
@@ -488,8 +488,8 @@
     import {MTLLoader} from "/Potree_Sncf_Projet/libs/three.js/loaders/MTLLoader.js";
     
     // Définition des positions initiales de la caméra et de la cible
-    let initialPosition = new THREE.Vector3(10.50, 8.15, 2.35);
-    let initialTarget = new THREE.Vector3(4.99, 9.46, 1.72);
+    let initialPosition = new THREE.Vector3(38.43, 11.54, 5.73);
+    let initialTarget = new THREE.Vector3(16.157, 38.732, 16.538);
     let lastHotspotView = { position: initialPosition, target: initialTarget };
 
     // Initialisation du viewer Potree et configuration des paramètres de base
@@ -512,7 +512,7 @@
     Potree.loadPointCloud("https://storage.googleapis.com/insa_test/Nuage_Tour_Heinrich/metadata.json", "Tour_Heinrich", function(e){
       viewer.scene.addPointCloud(e.pointcloud);
       let material = e.pointcloud.material;
-      material.size = 1.5;
+      material.size = 1.8;
       material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
       e.pointcloud.position.set(0, 0, 0);
     
