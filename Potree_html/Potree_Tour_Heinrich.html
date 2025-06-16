@@ -655,20 +655,6 @@
       annotationTexte3.visible = true;
       viewer.scene.annotations.add(annotationTexte3);
 
-      // Annotation texte 4 Zoom
-      let iconInfo4 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationTexte4 = new Potree.Annotation({
-          position: new THREE.Vector3(4.99, 7.81, 1.40),
-          title: iconInfo4, // Ici on met l'élément HTML au lieu du texte
-          description: "Au PAR, des postes téléphoniques opérant sur le réseau GSM-R assurent une communication bidirectionnelle permanente avec les conducteurs. À chaque appel entrant, le numéro du train s’affiche automatiquement, ce qui permet au régulateur d’identifier immédiatement l’origine de la demande. Inversement, il peut composer directement le numéro d’un train précis, lancer un appel vers tous les trains d’une zone donnée, ou même diffuser une communication simultanée à l’ensemble des circulations présentes sur la LGV. Grâce à ce système, la coordination entre le centre de commandement et les équipes mobiles gagne en réactivité et en fiabilité.",
-          cameraPosition: new THREE.Vector3(5.83, 7.84, 1.84),
-          cameraTarget: new THREE.Vector3(4.99, 7.81, 1.40)
-      });
-      addTextAnnotationClickHandler(annotationTexte4);
-      annotationTexte4.visible = true;
-      viewer.scene.annotations.add(annotationTexte4);
 
       //---------------- Annotations imagées ----------------//
       // Annotation Image 1 (Toiture)
@@ -1232,9 +1218,7 @@
           let annotations = [
           // Annotations textuelles
           { position: annotationTexte1.position, maxDistance: 15, minGisement: 140, maxGisement: 280, annotation: annotationTexte1 },
-          { position: annotationTexte2.position, maxDistance: 5, minGisement: 170, maxGisement: 330, annotation: annotationTexte2 },
           { position: annotationTexte3.position, maxDistance: distanceThresholdText, minGisement: 130, maxGisement: 300, annotation: annotationTexte3 },
-          { position: annotationTexte4.position, maxDistance: distanceThresholdText, minGisement: 180, maxGisement: 330, annotation: annotationTexte4 },
 
           // Annotations images
           { position: annotationImage1.position, maxDistance: distanceThresholdImage, minGisement: 130, maxGisement: 320, annotation: annotationImage1 },  // PRS 3
