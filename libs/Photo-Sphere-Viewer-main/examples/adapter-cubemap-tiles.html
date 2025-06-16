@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - cubemap tiles demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/cubemap-adapter": "/dist/cubemap-adapter/index.module.js",
+                    "@photo-sphere-viewer/cubemap-tiles-adapter": "/dist/cubemap-tiles-adapter/index.module.js",
+                    "@photo-sphere-viewer/gyroscope-plugin": "/dist/gyroscope-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { CubemapTilesAdapter } from '@photo-sphere-viewer/cubemap-tiles-adapter';
+            import { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const panos = [
+                {
+                    minFov: 30,
+                    options: {
+                        position: {
+                            yaw: 0,
+                            pitch: 0,
+                        },
+                        zoom: 50,
+                        caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                    },
+                    config: {
+                        faceSize: 1500,
+                        nbTiles: 4,
+                        baseUrl: {
+                            left: baseUrl + 'cubemap/px.jpg',
+                            front: baseUrl + 'cubemap/nz.jpg',
+                            right: baseUrl + 'cubemap/nx.jpg',
+                            back: baseUrl + 'cubemap/pz.jpg',
+                            top: baseUrl + 'cubemap/py.jpg',
+                            bottom: baseUrl + 'cubemap/ny.jpg',
+                        },
+                        tileUrl: (face, col, row) => {
+                            if (face === 'top') {
+                                return null; // the tile won't be loaded
+                            }
+                            if (face === 'front' && col === 2 && row === 2) {
+                                return 'error.jpg';
+                            }
+                            const num = row * 4 + col;
+                            return `${baseUrl}cubemap-tiles/${face}_${('00' + num).slice(-2)}.jpg`;
+                        },
+                    },
+                },
+                {
+                    minFov: 10,
+                    options: {
+                        position: {
+                            yaw: '52deg',
+                            pitch: 0,
+                        },
+                        zoom: 20,
+                        caption: "Simon's Town <b>&copy;  Greg Zall (HDRI Haven)</b>",
+                    },
+                    config: {
+                        levels: [
+                            {
+                                faceSize: 2048,
+                                nbTiles: 4,
+                                zoomRange: [0, 60],
+                            },
+                            {
+                                faceSize: 4096,
+                                nbTiles: 8,
+                                zoomRange: [60, 100],
+                            },
+                        ],
+                        baseUrl: {
+                            left: baseUrl + 'cubemap-tiles-24k/left_base.jpg',
+                            front: baseUrl + 'cubemap-tiles-24k/front_base.jpg',
+                            right: baseUrl + 'cubemap-tiles-24k/right_base.jpg',
+                            back: baseUrl + 'cubemap-tiles-24k/back_base.jpg',
+                            top: baseUrl + 'cubemap-tiles-24k/top_base.jpg',
+                            bottom: baseUrl + 'cubemap-tiles-24k/bottom_base.jpg',
+                        },
+                        tileUrl: (face, col, row, level) => {
+                            // skip sky tiles on higher resolution
+                            if (
+                                (face === 'top' && level === 1)
+                                || (face !== 'bottom' && row <= 2 && level === 1)
+                            ) {
+                                return null;
+                            }
+                            return `${baseUrl}cubemap-tiles-24k/${face}_${level}_${col}_${row}.jpg`;
+                        },
+                    },
+                },
+            ];
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: [CubemapTilesAdapter, {
+                    showErrorTile: true,
+                    baseBlur: true,
+                    // debug: true,
+                }],
+                plugins: [GyroscopePlugin],
+                loadingImg: baseUrl + 'loader.gif',
+                navbar: [
+                    'zoom',
+                    {
+                        id: 'custom',
+                        title: 'Change image',
+                        className: 'custom-button',
+                        content: '🔄',
+                        onClick: (() => {
+                            let i = 0;
+
+                            return () => {
+                                i = 1 - i;
+                                loadPanorama(panos[i]);
+                            };
+                        })(),
+                    },
+                    'caption',
+                    'gyroscope',
+                    'fullscreen',
+                ],
+            });
+
+            loadPanorama(panos[0]);
+
+            function loadPanorama(pano) {
+                viewer.setOption('minFov', pano.minFov);
+                return viewer.setPanorama(pano.config, pano.options);
+            }
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

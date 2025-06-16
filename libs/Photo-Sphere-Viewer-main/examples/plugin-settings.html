@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - settings demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/settings-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/settings-plugin": "/dist/settings-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { SettingsPlugin } from '@photo-sphere-viewer/settings-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere.jpg',
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                plugins: [
+                    [SettingsPlugin, {
+                        persist: true, // default
+                        // storage: { // default is localStorage
+                        //     get(id) {
+                        //         return JSON.parse(sessionStorage.getItem(`psv-${id}`));
+                        //     },
+                        //     set(id, value) {
+                        //         sessionStorage.setItem(`psv-${id}`, JSON.stringify(value));
+                        //     },
+                        // },
+                    }],
+                ],
+            });
+
+            const settings = viewer.getPlugin(SettingsPlugin);
+
+            let currentToggle = true;
+            let currentOption = 'A';
+
+            settings.addSetting({
+                id: 'custom-toggle-setting',
+                label: 'Toggle setting',
+                type: 'toggle',
+                active: () => currentToggle,
+                toggle: () => (currentToggle = !currentToggle),
+            });
+
+            settings.addSetting({
+                id: 'custom-options-setting',
+                label: 'Options setting',
+                type: 'options',
+                current: () => currentOption,
+                options: () => [
+                    { id: 'A', label: 'Option A' },
+                    { id: 'B', label: 'Option B' },
+                ],
+                apply: (option) => (currentOption = option),
+                badge: () => currentOption,
+            });
+
+            settings.addEventListener('setting-changed', ({ settingId, settingValue }) => {
+                console.log(`${settingId}: ${settingValue}`);
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

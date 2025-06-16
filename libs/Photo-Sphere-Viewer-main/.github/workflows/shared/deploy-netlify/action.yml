@@ -1,0 +1,44 @@
+name: deploy-netlify
+
+inputs:
+  env:
+    required: true
+  root-folder:
+    required: true
+  excludes:
+    default: ''
+  functions-folder:
+    default: ''
+  auth-token:
+    required: true
+  site-id:
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: start deploy
+      uses: bobheadxi/deployments@v1
+      id: deployment
+      with:
+        step: start
+        env: ${{ inputs.env }}
+
+    - name: deploy
+      id: netlify
+      shell: bash
+      run: node ./build/deploy-netlify.mjs --rootFolder=${{ inputs.root-folder }} --exclude=${{ inputs.excludes }} --functionsFolder=${{ inputs.functions-folder }}
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ inputs.auth-token }}
+        NETLIFY_SITE_ID: ${{ inputs.site-id }}
+
+    - name: finish deploy
+      uses: bobheadxi/deployments@v1
+      if: always()
+      with:
+        step: finish
+        status: ${{ job.status }}
+        env: ${{ steps.deployment.outputs.env }}
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+        env_url: ${{ steps.netlify.outputs.deploy_url }}

@@ -1,0 +1,38 @@
+name: comment-issues
+run-name: Comment on issues
+
+on:
+  issues:
+    types:
+      - labeled
+
+permissions:
+  issues: write
+
+jobs:
+  missing-demo:
+    if: ${{ github.event.label.name == 'missing demo' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: add comment
+        run: gh issue comment "$NUMBER" --body "$BODY"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: |
+            An isolated working demo is required in order to analyze this issue.
+            You can easily create a demo on Codepen/JSFiddle/StackBlitz by clicking the buttons on the top of every example in the documentation.
+
+            **Why this is important:**
+            - I do not have the time to reproduce every test case from scratch
+            - your bug might be related to your own application and not Photo Sphere Viewer (thus I will be unable to reproduce it)
+            - taking the time to create a demo yourself allows to take a step back and find the solution yourself
+
+            **DO'S and DON'TS:**
+            - DON'T use minified source files in your demo
+            - DON'T share your code inside a ZIP, I will only look at online demos
+            - DO isolate the viewer from the rest of the app, if possible
+            - DO describe the step-by-step workflow to reproduce the issue

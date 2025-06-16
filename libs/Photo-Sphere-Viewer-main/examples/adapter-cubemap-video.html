@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - cubemap video demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/settings-plugin/index.css" />
+        <link rel="stylesheet" href="/dist/video-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/cubemap-video-adapter": "/dist/cubemap-video-adapter/index.module.js",
+                    "@photo-sphere-viewer/resolution-plugin": "/dist/resolution-plugin/index.module.js",
+                    "@photo-sphere-viewer/settings-plugin": "/dist/settings-plugin/index.module.js",
+                    "@photo-sphere-viewer/video-plugin": "/dist/video-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { CubemapVideoAdapter } from '@photo-sphere-viewer/cubemap-video-adapter';
+            import { ResolutionPlugin } from '@photo-sphere-viewer/resolution-plugin';
+            import { SettingsPlugin } from '@photo-sphere-viewer/settings-plugin';
+            import { VideoPlugin } from '@photo-sphere-viewer/video-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: [CubemapVideoAdapter, {
+                    autoplay: false,
+                    muted: true,
+                }],
+                caption: 'Dreams of Dalí <b>&copy; The Dalí Museum</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                navbar: 'video zoom move caption settings fullscreen',
+                plugins: [
+                    [VideoPlugin, {
+                        progressbar: true,
+                        bigbutton: true,
+                    }],
+                    SettingsPlugin,
+                    [ResolutionPlugin, {
+                        defaultResolution: 'FHD',
+                        resolutions: [
+                            {
+                                id: 'UHD',
+                                label: 'Ultra high',
+                                panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_UHD.webm' },
+                            },
+                            {
+                                id: 'FHD',
+                                label: 'High',
+                                panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_FHD.webm' },
+                            },
+                            {
+                                id: 'HD',
+                                label: 'Standard',
+                                panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_HD.webm' },
+                            },
+                        ],
+                    }],
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

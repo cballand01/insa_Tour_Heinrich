@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - markers demo (cubemap)</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/markers-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/cubemap-adapter": "/dist/cubemap-adapter/index.module.js",
+                    "@photo-sphere-viewer/markers-plugin": "/dist/markers-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
+            import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: CubemapAdapter,
+                panorama: {
+                    left: baseUrl + 'cubemap/px.jpg',
+                    front: baseUrl + 'cubemap/nz.jpg',
+                    right: baseUrl + 'cubemap/nx.jpg',
+                    back: baseUrl + 'cubemap/pz.jpg',
+                    top: baseUrl + 'cubemap/py.jpg',
+                    bottom: baseUrl + 'cubemap/ny.jpg',
+                },
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                navbar: [
+                    'markers',
+                    'markersList',
+                    {
+                        content: '💬',
+                        title: 'Show all tooltips',
+                        className: 'custom-button',
+                        onClick: () => {
+                            markers.toggleAllTooltips();
+                        },
+                    },
+                    'caption',
+                    'fullscreen',
+                ],
+                plugins: [
+                    [MarkersPlugin, {
+                        markers: (() => {
+                            const a = [];
+                            for (let i = 0; i < Math.PI * 2; i += Math.PI / 4) {
+                                for (let j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
+                                    a.push({
+                                        id: '#' + a.length,
+                                        tooltip: '#' + a.length,
+                                        position: { yaw: i, pitch: j },
+                                        image: baseUrl + 'pictos/pin-red.png',
+                                        size: { width: 32, height: 32 },
+                                        anchor: 'bottom center',
+                                        data: {
+                                            deletable: true,
+                                        },
+                                    });
+                                }
+                            }
+
+                            a.push({
+                                id: 'polygon',
+                                svgStyle: {
+                                    fill: 'rgba(255, 0, 111, 0.26)',
+                                },
+                                polygon: [
+                                    [6.2208, 0.0906], [0.0443, 0.1028], [0.2322, 0.0849], [0.4531, 0.0387],
+                                    [0.5022, -0.0056], [0.4587, -0.0396], [0.252, -0.0453], [0.0434, -0.0575],
+                                    [6.1302, -0.0623], [6.0094, -0.0169], [6.0471, 0.032], [6.2208, 0.0906],
+                                ],
+                                tooltip: {
+                                    content: 'This is a mountain',
+                                    position: 'right bottom',
+                                },
+                            });
+
+                            a.push({
+                                id: 'polygonPixels',
+                                polygonPixels: [
+                                    [
+                                        { textureFace: 'front', textureX: 200, textureY: 200 },
+                                        { textureFace: 'left', textureX: 1300, textureY: 200 },
+                                        { textureFace: 'top', textureX: 1300, textureY: 200 },
+                                    ],
+                                    [
+                                        { textureFace: 'top', textureX: 1500, textureY: 115 },
+                                        { textureFace: 'left', textureX: 1500, textureY: 115 },
+                                        { textureFace: 'front', textureX: 115, textureY: 0 },
+                                    ],
+                                ],
+                                style: {
+                                    fill: 'gold',
+                                    opacity: 0.5,
+                                },
+                            });
+
+                            return a;
+                        })(),
+                    }],
+                ],
+            });
+
+            const markers = viewer.getPlugin(MarkersPlugin);
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

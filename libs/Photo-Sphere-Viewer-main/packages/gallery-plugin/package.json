@@ -1,0 +1,25 @@
+{
+  "name": "@photo-sphere-viewer/gallery-plugin",
+  "version": "0.0.0",
+  "description": "Photo Sphere Viewer plugin to add a gallery of multiple panoramas.",
+  "homepage": "https://photo-sphere-viewer.js.org/plugins/gallery.html",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@photo-sphere-viewer/core": "0.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "instrument": "nyc instrument dist/index.module.js .",
+    "lint": "tsc --noEmit && eslint . --fix && stylelint \"src/**/*.scss\" --fix",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "npm-link": "cd dist && npm link"
+  },
+  "psv": {
+    "title": "Photo Sphere Viewer / Gallery Plugin",
+    "style": true,
+    "budget": "30kb"
+  }
+}

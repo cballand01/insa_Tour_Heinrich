@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/markers-plugin/index.css" />
+        <link rel="stylesheet" href="/dist/compass-plugin/index.css" />
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/compass-plugin": "/dist/compass-plugin/index.module.js",
+                    "@photo-sphere-viewer/markers-plugin": "/dist/markers-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { CompassPlugin } from '@photo-sphere-viewer/compass-plugin';
+            import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere-small.jpg',
+                plugins: [
+                    CompassPlugin,
+                    MarkersPlugin,
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

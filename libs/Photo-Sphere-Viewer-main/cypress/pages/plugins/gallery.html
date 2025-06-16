@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/gallery-plugin/index.css" />
+        <link rel="stylesheet" href="/style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/gallery-plugin": "/dist/gallery-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const items = [
+                {
+                    id: 'sphere',
+                    panorama: baseUrl + 'sphere-small.jpg',
+                    options: {
+                        caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 'test-sphere',
+                    panorama: baseUrl + 'sphere-test.jpg',
+                    name: 'Test sphere',
+                    options: {
+                        transition: false,
+                    },
+                },
+                {
+                    id: 1,
+                    panorama: baseUrl + 'tour/key-biscayne-1.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-1-thumb.jpg',
+                    name: 'One',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 2,
+                    panorama: baseUrl + 'tour/key-biscayne-2.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-2-thumb.jpg',
+                    name: 'Two',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 3,
+                    panorama: baseUrl + 'tour/key-biscayne-3.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-3-thumb.jpg',
+                    name: 'Three',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 4,
+                    panorama: baseUrl + 'tour/key-biscayne-4.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-4-thumb.jpg',
+                    name: 'Four',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 5,
+                    panorama: baseUrl + 'tour/key-biscayne-5.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-5-thumb.jpg',
+                    name: 'Five',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 6,
+                    panorama: baseUrl + 'tour/key-biscayne-6.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-6-thumb.jpg',
+                    name: 'Six',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+                {
+                    id: 7,
+                    panorama: baseUrl + 'tour/key-biscayne-7.jpg',
+                    thumbnail: baseUrl + 'tour/key-biscayne-7-thumb.jpg',
+                    name: 'Seven',
+                    options: {
+                        caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+                        transition: false,
+                    },
+                },
+            ];
+
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: items[0].panorama,
+                caption: items[0].options.caption,
+                plugins: [
+                    [GalleryPlugin, {
+                        items: items,
+                        visibleOnLoad: urlParams.get('visibleOnLoad') !== 'false',
+                        hideOnClick: false,
+                    }],
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

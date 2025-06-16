@@ -1,0 +1,142 @@
+name: build
+
+on:
+  push:
+    branches:
+      - '*'
+    paths-ignore:
+      - 'examples/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'examples/**'
+  workflow_dispatch: {}
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: read
+
+    outputs:
+      build: ${{ steps.filter.outputs.build }}
+      src: ${{ steps.filter.outputs.src }}
+      e2e: ${{ steps.filter.outputs.e2e }}
+      docs: ${{ steps.filter.outputs.docs }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          base: ${{ github.ref }}
+          filters: |
+            build:
+              - '*'
+              - 'build/**'
+            src:
+              - 'packages/**'
+            e2e:
+              - 'cypress/**'
+            docs:
+              - 'docs/**'
+
+  build:
+    needs: changes
+
+    if: ${{ needs.changes.outputs.build == 'true' || needs.changes.outputs.src == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup
+        uses: ./.github/workflows/shared/setup
+
+      - name: build
+        run: yarn ci:build
+
+      - name: test summary
+        uses: phoenix-actions/test-reporting@v15
+        if: ${{ !cancelled() }}
+        with:
+          name: build
+          output-to: step-summary
+          path: 'packages/*/reports/mocha.json,build/reports/mocha.json'
+          reporter: mocha-json
+
+  e2e:
+    needs: [changes, build]
+
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !startsWith(github.head_ref, 'dependabot') && (needs.changes.outputs.build == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.e2e == 'true') }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup
+        uses: ./.github/workflows/shared/setup
+        with:
+          cache-readonly: 'true'
+          turbo-cache: 'false'
+
+      - name: e2e
+        run: yarn ci:e2e
+
+      - name: test summary
+        uses: phoenix-actions/test-reporting@v15
+        if: ${{ !cancelled() }}
+        with:
+          name: e2e
+          output-to: step-summary
+          path: 'cypress/reports/html/.jsons/*.json'
+          reporter: mochawesome-json
+
+      - name: coverage summary
+        if: ${{ !cancelled() }}
+        run: node ./build/generate-coverage-summary.mjs >> $GITHUB_STEP_SUMMARY
+
+      - name: report artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: e2e-report-${{ env.REF_NAME_SLUG }}-${{ env.SHORT_SHA }}
+          path: |
+            cypress/reports/html
+            !cypress/reports/html/.jsons
+
+      - name: deploy report
+        uses: ./.github/workflows/shared/deploy-netlify
+        if: ${{ !cancelled() && github.repository == 'mistic100/Photo-Sphere-Viewer' && github.ref_name == 'main' }}
+        with:
+          env: cypress
+          root-folder: cypress/reports/html
+          excludes: .jsons
+          auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          site-id: ${{ secrets.NETLIFY_REPORTS_SITE_ID }}
+
+  docs:
+    needs: [changes, build]
+
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !startsWith(github.head_ref, 'dependabot') && (needs.changes.outputs.build == 'true' || needs.changes.outputs.docs == 'true') }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup
+        uses: ./.github/workflows/shared/setup
+        with:
+          cache-readonly: 'true'
+          turbo-cache: 'false'
+
+      - name: build
+        run: yarn doc:build

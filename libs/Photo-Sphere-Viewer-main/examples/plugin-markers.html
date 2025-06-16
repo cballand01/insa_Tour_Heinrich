@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - markers demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/markers-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+
+        <style>
+            .demo-label {
+                color: white;
+                font-size: 20px;
+                font-family: Helvetica, sans-serif;
+                text-align: center;
+                padding: 5px;
+                border: 1px solid white;
+                background: rgba(0, 0, 0, 0.4);
+            }
+
+            .custom-tooltip {
+                max-width: none;
+                width: 300px;
+                box-shadow: 0 0 0 3px white;
+            }
+            .custom-tooltip .psv-tooltip-content {
+                padding: 0;
+            }
+
+            .custom-tooltip img {
+                width: 100%;
+                border-radius: 4px 4px 0 0;
+            }
+
+            .custom-tooltip h2,
+            .custom-tooltip p {
+                margin: 1rem;
+                text-align: justify;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <!-- text used for the marker description -->
+        <script type="text/template" id="pin-content">
+            <h1>HTML Ipsum Presents</h1>
+
+            <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas.
+              Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam
+              egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et
+              sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet,
+              wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac
+              dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
+
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d54469.108394396746!2d6.9617553450295855!3d44.151844842645815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cdaf6678af879d%3A0xcabc15aee7b89386!2sParc%20national%20du%20Mercantour!5e0!3m2!1sfr!2sfr!4v1611498421096!5m2!1sfr!2sfr"
+              width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0">
+            </iframe>
+
+            <h2>Header Level 2</h2>
+
+            <ol>
+              <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+              <li>Aliquam tincidunt mauris eu risus.</li>
+            </ol>
+
+            <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet
+              congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis,
+              tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
+
+            <h3>Header Level 3</h3>
+
+            <ul>
+              <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+              <li>Aliquam tincidunt mauris eu risus.</li>
+            </ul>
+        </script>
+
+        <!-- pattern used for the polygon marker -->
+        <svg id="patterns" style="position: absolute; top: -1000px">
+            <defs>
+                <pattern id="dots" x="10" y="10" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="10" style="stroke: none; fill: rgba(255, 0, 0, 0.4)" />
+                </pattern>
+                <pattern id="points" x="10" y="10" width="15" height="15" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="0.8" style="stroke: none; fill: red" />
+                </pattern>
+                <pattern id="image" x="256" y="256" width="512" height="512" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="512" height="512" fill="#8DC73F" />
+                    <image
+                        href="https://photo-sphere-viewer-data.netlify.app/assets/cubemap-test/2.png"
+                        x="128" y="128" width="256" height="256"
+                    />
+                </pattern>
+            </defs>
+        </svg>
+
+        <custom-marker id="custom-marker-element" style="display: none">
+            <img src="https://photo-sphere-viewer-data.netlify.app/assets/sphere-small.jpg" />
+            <h2>Custom element</h2>
+            <p>Use an existing element as marker. This WebComponent contains it's own animations and tooltip.</p>
+        </custom-marker>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/gyroscope-plugin": "/dist/gyroscope-plugin/index.module.js",
+                    "@photo-sphere-viewer/markers-plugin": "/dist/markers-plugin/index.module.js",
+                    "@photo-sphere-viewer/stereo-plugin": "/dist/stereo-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
+            import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+            import { StereoPlugin } from '@photo-sphere-viewer/stereo-plugin';
+            import { CustomMarkerElement } from './scripts/CustomMarkerElement.js';
+
+            customElements.define('custom-marker', CustomMarkerElement);
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere.jpg',
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                navbar: [
+                    'zoom',
+                    'move',
+                    'markers',
+                    'markersList',
+                    {
+                        content: '💬',
+                        title: 'Show all tooltips',
+                        className: 'custom-button',
+                        onClick: () => {
+                            markers.toggleAllTooltips();
+                        },
+                    },
+                    'caption',
+                    'fullscreen',
+                ],
+                plugins: [
+                    GyroscopePlugin,
+                    StereoPlugin,
+                    [MarkersPlugin, {
+                        // defaultHoverScale: true,
+                        markers: (() => {
+                            const a = [];
+
+                            // marker with content and tooltip
+                            a.push({
+                                id: 'content',
+                                tooltip: 'Click me!',
+                                content: document.getElementById('pin-content').innerHTML,
+                                position: { yaw: 0.11, pitch: 0.32 },
+                                image: baseUrl + 'pictos/pin-blue.png',
+                                size: { width: 32, height: 32 },
+                                anchor: 'bottom center',
+                            });
+
+                            // marker with custom tooltip
+                            a.push({
+                                id: 'custom-tooltip',
+                                tooltip: {
+                                    content: `
+<img src="${baseUrl}sphere-small.jpg">
+<article>
+<h2>Lorem ipsum</h2>
+<p>Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis,
+tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p>
+</article>`,
+                                    className: 'custom-tooltip',
+                                    trigger: 'click',
+                                },
+                                position: { yaw: -0.35, pitch: 0.11 },
+                                zoomLvl: 100,
+                                image: baseUrl + 'pictos/pin-blue.png',
+                                size: { width: 32, height: 32 },
+                                anchor: 'bottom center',
+                                listContent: 'Lorem ipsum',
+                                hoverScale: 1.5,
+                            });
+
+                            // big polygon to test the handling of points behind the camera
+                            a.push({
+                                id: 'polygon-sky',
+                                svgStyle: {
+                                    fill: 'rgba(0, 190, 255, 0.1)',
+                                },
+                                polygon: [
+                                    [6.0848, 0.1806], [0.1022, 0.3166], [0.6333, 0.3836], [1.2396, 0.5112],
+                                    [1.7922, 0.5544], [2.7635, 0.7853], [3.3688, 0.4723], [3.6902, 0.6161],
+                                    [4.2981, 0.6942], [4.6605, 0.6618], [5.4694, 0.1880], [5.7125, 0.1302],
+                                ],
+                                hideList: true,
+                            });
+
+                            // polygon with custom style
+                            a.push({
+                                id: 'polygon-1',
+                                polygonPixels: [
+                                    [
+                                        [2941, 1413], [3042, 1402], [3041, 1555], [2854, 1559],
+                                        [2739, 1516], [2775, 1469], [2941, 1413],
+                                    ],
+                                    [
+                                        [2900, 1450], [2900, 1500], [2950, 1500], [2950, 1450], 
+                                    ],
+                                ],
+                                svgStyle: {
+                                    fill: 'rgba(255,0,0,0.2)',
+                                    stroke: 'rgba(255, 0, 50, 0.8)',
+                                    strokeWidth: '2px',
+                                },
+                                tooltip: {
+                                    content: 'Polygon with hole',
+                                    position: 'bottom right',
+                                },
+                            });
+
+                            a.push({
+                                id: 'polygon-2',
+                                polygonPixels: [
+                                    [3042, 1402], [3222, 1419], [3433, 1463], [3480, 1505],
+                                    [3438, 1538], [3241, 1543], [3041, 1555],
+                                ],
+                                svgStyle: {
+                                    fill: 'url(#image)',
+                                    fillOpacity: '0.5',
+                                    stroke: 'rgba(255, 0, 50, 0.8)',
+                                    strokeWidth: '2px',
+                                },
+                                tooltip: {
+                                    content: 'Polygon with image background',
+                                    position: 'bottom right',
+                                },
+                            });
+
+                            // simple polyline
+                            a.push({
+                                id: 'polyline',
+                                polylinePixels: [
+                                    [2478, 1635], [2184, 1747], [1674, 1953], [1166, 1852],
+                                    [709, 1669], [301, 1519], [94, 1399], [34, 1356],
+                                ],
+                                svgStyle: {
+                                    stroke: 'rgba(80, 150, 50, 0.8)',
+                                    strokeLinecap: 'round',
+                                    strokeLinejoin: 'round',
+                                    strokeWidth: '20px',
+                                },
+                                tooltip: 'Polyline',
+                            });
+
+                            // embedded images
+                            a.push({
+                                id: 'imageLayer',
+                                imageLayer: baseUrl + 'pictos/tent.png',
+                                size: { width: 120, height: 94 },
+                                position: { yaw: -0.45, pitch: -0.1 },
+                                tooltip: 'Image embedded in the scene',
+                            });
+
+                            a.push({
+                                id: 'imageLayerOrient',
+                                imageLayer: baseUrl + 'pictos/target.png',
+                                size: { width: 120, height: 120 },
+                                position: { yaw: 0.37, pitch: -0.2 },
+                                opacity: 0.8,
+                                rotation: { pitch: Math.PI/2 },
+                                tooltip: 'Image embedded in the scene with "horizontal" orientation',
+                            });
+
+                            // HTML & image markers
+                            a.push({
+                                id: 'html-img-demo',
+                                html: 'HTML & Image demo',
+                                scale: [0.5, 1.5],
+                                className: 'demo-label',
+                                position: { yaw: 0.5, pitch: -0.42 },
+                                hideList: true,
+                            });
+
+                            a.push({
+                                id: 'html',
+                                html: `<code>HTML</code> content <img src="${baseUrl}pictos/pin-blue.png" style="height: 24px; vertical-align: top;"/>`,
+                                anchor: 'bottom right',
+                                style: {
+                                    color: 'white',
+                                    fontSize: '20px',
+                                    fontFamily: 'Helvetica, sans-serif',
+                                    textAlign: 'center',
+                                },
+                                position: { yaw: 0.35, pitch: -0.3 },
+                            });
+
+                            a.push({
+                                id: 'image',
+                                image: baseUrl + 'loader.gif',
+                                size: { width: 100, height: 100 },
+                                position: { yaw: 0.5, pitch: -0.3 },
+                                listContent: 'An animated gif',
+                            });
+
+                            a.push({
+                                id: 'element',
+                                element: document.querySelector('#custom-marker-element'),
+                                listContent: 'Custom element',
+                                position: { yaw: 0.65, pitch: -0.3 },
+                                zIndex: 10,
+                            });
+
+                            // SVG markers
+                            a.push({
+                                id: 'svg-demo',
+                                html: 'SVG marker demo',
+                                scale: [0.5, 1.5],
+                                className: 'demo-label',
+                                position: { yaw: -0.5, pitch: -0.42 },
+                                hideList: true,
+                            });
+
+                            a.push({
+                                id: 'circle',
+                                tooltip: 'A circle of radius 30',
+                                circle: 30,
+                                svgStyle: {
+                                    fill: 'rgba(255,255,0,0.3)',
+                                    stroke: 'yellow',
+                                    strokeWidth: '2px',
+                                },
+                                position: { yaw: -0.5, pitch: -0.32 },
+                                anchor: 'bottom right',
+                            });
+
+                            a.push({
+                                id: 'ellipse',
+                                tooltip: 'An ellipse of radius 60/30',
+                                ellipse: [60, 30],
+                                svgStyle: {
+                                    fill: 'rgba(255,255,0,0.3)',
+                                    stroke: 'yellow',
+                                    strokeWidth: '2px',
+                                },
+                                position: { yaw: -0.5, pitch: -0.32 },
+                                anchor: 'bottom left',
+                            });
+
+                            a.push({
+                                id: 'rect',
+                                tooltip: 'A square a side 60',
+                                rect: [60, 60],
+                                svgStyle: {
+                                    fill: 'rgba(255,255,0,0.3)',
+                                    stroke: 'yellow',
+                                    strokeWidth: '2px',
+                                },
+                                position: { yaw: -0.5, pitch: -0.32 },
+                                anchor: 'top right',
+                            });
+
+                            a.push({
+                                id: 'path',
+                                tooltip: 'A custom path',
+                                path: 'M 0 0 L 60 60 L 60 0 L 0 60 L 0 0',
+                                svgStyle: {
+                                    fill: 'rgba(255,255,0,0.3)',
+                                    stroke: 'yellow',
+                                    strokeWidth: '2px',
+                                },
+                                position: { yaw: -0.5, pitch: -0.32 },
+                                anchor: 'top left',
+                            });
+
+                            // Scaling markers
+                            a.push({
+                                id: 'scale-demo',
+                                html: 'Marker scale demo',
+                                scale: [0.5, 1.5],
+                                className: 'demo-label',
+                                position: { yaw: 0, pitch: -0.47 },
+                                hideList: true,
+                            });
+
+                            a.push({
+                                id: 'scale-0',
+                                tooltip: 'No scale',
+                                scale: false,
+                                circle: 20,
+                                svgStyle: {
+                                    fill: 'rgba(0, 0, 0, 0.5)',
+                                },
+                                position: { yaw: -0.1, pitch: -0.4 },
+                                hoverScale: false,
+                            });
+
+                            a.push({
+                                id: 'scale-1',
+                                tooltip: '<code>zoom [0.5, 1.5]</code>',
+                                scale: {
+                                    zoom: [0.5, 1.5],
+                                },
+                                circle: 20,
+                                svgStyle: {
+                                    fill: 'rgba(0, 0, 0, 0.5)',
+                                },
+                                position: { yaw: 0, pitch: -0.4 },
+                                hoverScale: false,
+                            });
+
+                            a.push({
+                                id: 'scale-2',
+                                tooltip: '<code>yaw [1, 2]</code>',
+                                scale: {
+                                    yaw: [1, 1.5],
+                                },
+                                circle: 20,
+                                svgStyle: {
+                                    fill: 'rgba(0, 0, 0, 0.5)',
+                                },
+                                position: { yaw: 0.1, pitch: -0.4 },
+                                hoverScale: false,
+                            });
+
+                            // add markers all hover the sphere
+                            for (let i = 0, k = 1; i < Math.PI * 2; i += Math.PI / 4) {
+                                for (let j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4, k++) {
+                                    a.push({
+                                        id: '#' + k,
+                                        tooltip: '#' + k,
+                                        position: { yaw: i, pitch: j },
+                                        image: baseUrl + 'pictos/pin-red.png',
+                                        size: { width: 32, height: 32 },
+                                        anchor: 'bottom center',
+                                        data: {
+                                            deletable: true,
+                                        },
+                                    });
+                                }
+                            }
+
+                            return a;
+                        })(),
+                    }],
+                ],
+            });
+
+            const markers = viewer.getPlugin(MarkersPlugin);
+
+            viewer.addEventListener('ready', () => {
+                markers.showMarkerTooltip('content');
+            }, { once: true });
+
+            viewer.addEventListener('click', ({ data }) => {
+                if (!data.rightclick) {
+                    markers.addMarker({
+                        id: '#' + Math.random(),
+                        tooltip: 'Generated marker',
+                        position: {
+                            yaw: data.yaw,
+                            pitch: data.pitch,
+                        },
+                        image: baseUrl + 'pictos/pin-red.png',
+                        size: { width: 32, height: 32 },
+                        anchor: 'bottom center',
+                        data: {
+                            deletable: true,
+                        },
+                    });
+                }
+            });
+
+            markers.addEventListener('select-marker', ({ marker, doubleClick, rightClick }) => {
+                console.log('select', marker.id);
+
+                if (marker.data && marker.data.deletable) {
+                    if (doubleClick) {
+                        markers.removeMarker(marker);
+                    } else if (rightClick) {
+                        markers.updateMarker({
+                            id: marker.id,
+                            image: baseUrl + 'pictos/pin-blue.png',
+                        });
+                    }
+                }
+            });
+
+            markers.addEventListener('unselect-marker', ({ marker }) => {
+                console.log('unselect', marker.id);
+            });
+
+            markers.addEventListener('enter-marker', ({ marker }) => {
+                console.log('enter', marker.id);
+            });
+
+            markers.addEventListener('leave-marker', ({ marker }) => {
+                console.log('leave', marker.id);
+            });
+
+            markers.addEventListener('select-marker-list', ({ marker }) => {
+                console.log('select-list', marker.id);
+            });
+
+            markers.addEventListener('goto-marker-done', ({ marker }) => {
+                console.log('goto-done', marker.id);
+            });
+
+            markers.addEventListener('marker-visibility', ({ marker, visible }) => {
+                console.log('marker-visibility', marker.id, visible);
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

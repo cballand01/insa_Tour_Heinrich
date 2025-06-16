@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - map demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/map-plugin/index.css" />
+        <link rel="stylesheet" href="/dist/markers-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "lil-gui": "/node_modules/three/examples/jsm/libs/lil-gui.module.min.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/map-plugin": "/dist/map-plugin/index.module.js",
+                    "@photo-sphere-viewer/markers-plugin": "/dist/markers-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { GUI } from 'lil-gui';
+            import { addColorPicker } from './scripts/LilGuiColorPicker.js';
+            import { addTextarea } from './scripts/LilGuiTextarea.js';
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import randomColor from 'https://cdn.jsdelivr.net/npm/randomcolor/+esm';
+            import { MapPlugin } from '@photo-sphere-viewer/map-plugin';
+            import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere.jpg',
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                defaultYaw: '-10deg',
+                keyboard: 'always',
+                plugins: [
+                    [MapPlugin, {
+                        imageUrl: baseUrl + 'map.jpg',
+                        center: { x: 807, y: 607 },
+                        rotation: '135deg',
+                        defaultZoom: 40,
+                        // position: 'top left',
+                        // shape: 'square',
+                        // size: '300px',
+                        // maxZoom: 300,
+                        // overlayImage: null,
+                        // static: true,
+                        // visibleOnLoad: false,
+                        // minimizeOnHotspotClick: false,
+                        hotspots: [
+                            {
+                                x: 450,
+                                y: 450,
+                                id: 'green-lake',
+                                tooltip: 'Lac vert',
+                                color: 'green',
+                            },
+                            {
+                                yaw: '-45deg',
+                                distance: 80, // pixels
+                                tooltip: 'Hotspot',
+                                zIndex: 10,
+                            },
+                            {
+                                yaw: '-30deg',
+                                distance: 90,
+                                color: 'lightgrey',
+                            },
+                        ],
+                        spotStyle: {
+                            // color: 'pink',
+                            // hoverSize: 20,
+                            // hoverColor: 'red',
+                        },
+                        buttons: {
+                            // maximize: false,
+                            // north: false,
+                            // close: false,
+                            // reset: false,
+                        },
+                    }],
+                    [MarkersPlugin, {
+                        markers: [
+                            {
+                                id: 'mountain',
+                                tooltip: 'A mountain',
+                                position: { yaw: 0.11, pitch: 0.32 },
+                                image: baseUrl + 'pictos/pin-blue.png',
+                                size: { width: 32, height: 32 },
+                                anchor: 'bottom center',
+                                data: {
+                                    map: { 
+                                        distance: 220,
+                                        size: 25,
+                                        image: baseUrl + 'pictos/pin-blue.png',
+                                        hoverImage: baseUrl + 'pictos/pin-red.png',
+                                    },
+                                },
+                            },
+                        ],
+                    }],
+                ],
+                navbar: [
+                    'zoom',
+                    'move',
+                    {
+                        content: 'Change map',
+                        className: 'custom-button',
+                        onClick: () => {
+                            changeMap();
+                        },
+                    },
+                    'caption',
+                    'fullscreen',
+                ],
+            });
+
+            const map = viewer.getPlugin(MapPlugin);
+
+            map.addEventListener('select-hotspot', ({ hotspotId }) => {
+                console.log(`Click hotspot ${hotspotId}`);
+            });
+
+            map.addEventListener('view-changed', ({ view }) => {
+                console.log(`View size: ${view}`);
+
+                if (view === 'maximized') {
+                    map.setZoom(100);
+                    gui.hide();
+                } else if (view === 'normal') {
+                    map.setZoom(40);
+                    gui.show();
+                } else {
+                    gui.show();
+                }
+            });
+
+            function changeMap() {
+                viewer.textureLoader.loadImage(baseUrl + 'map.jpg').then((image) => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.fillStyle = randomColor({ luminosity: 'light' });
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.globalCompositeOperation = 'multiply';
+                    ctx.drawImage(image, 0, 0);
+
+                    map.setImage(
+                        canvas.toDataURL(),
+                        {
+                            x: Math.random() * image.width,
+                            y: Math.random() * image.height,
+                        },
+                        Math.random() * 2 * Math.PI
+                    );
+                });
+            }
+
+            window.viewer = viewer;
+
+            const overlayImage = map.config.overlayImage;
+            const config = {
+                // position
+                center: { ...map.config.center, },
+                rotation: map.config.rotation / Math.PI * 180,
+
+                // display
+                shape: map.config.shape,
+                size: map.config.size,
+                position: map.config.position.join(' '),
+                static: map.config.static,
+                minZoom: Math.round(Math.exp(map.config.minZoom) * 100),
+                maxZoom: Math.round(Math.exp(map.config.maxZoom) * 100),
+                overlayImage: map.config.overlayImage !== null,
+
+                // pin
+                pinImage: map.config.pinImage,
+                pinSize: map.config.pinSize,
+                coneColor: map.config.coneColor,
+                coneSize: map.config.coneSize,
+
+                // hotspot
+                spotStyle: {
+                    size: map.config.spotStyle.size,
+                    color: map.config.spotStyle.color,
+                    borderSize: map.config.spotStyle.borderSize,
+                    borderColor: map.config.spotStyle.borderColor ?? map.config.spotStyle.hoverBorderColor,
+                    hoverSize: map.config.spotStyle.hoverSize ?? map.config.spotStyle.size,
+                    hoverColor: map.config.spotStyle.hoverColor ?? map.config.spotStyle.color,
+                    hoverBorderSize: map.config.spotStyle.hoverBorderSize,
+                    hoverBorderColor: map.config.spotStyle.hoverBorderColor,
+                },
+            };
+
+            const gui = new GUI({ title: 'Map Plugin Options' });
+
+            const position = gui.addFolder('Position');
+            position.add(config.center, 'x', 0, 1600, 1).name('center.x');
+            position.add(config.center, 'y', 0, 1200, 1).name('center.y');
+            position.add(config, 'rotation', 0, 360, 1);
+
+            const display = gui.addFolder('Display');
+            display.add(config, 'shape', ['round', 'square']);
+            display.add(config, 'size');
+            display.add(config, 'position', ['top left', 'top right', 'bottom left', 'bottom right']);
+            display.add(config, 'minZoom', 10, 100, 1);
+            display.add(config, 'maxZoom', 10, 400, 1);
+            display.add(config, 'static');
+            display.add(config, 'overlayImage');
+
+            const pin = gui.addFolder('Pin');
+            addTextarea(pin, config, 'pinImage', 10);
+            pin.add(config, 'pinSize', 5, 100, 1);
+            addColorPicker(pin, config, 'coneColor', false);
+            pin.add(config, 'coneSize', 5, 100, 1);
+
+            const hotspot = gui.addFolder('Hotstpots (spotStyle)');
+            hotspot.add(config.spotStyle, 'size', 5, 50, 1);
+            addColorPicker(hotspot, config.spotStyle, 'color', true);
+            hotspot.add(config.spotStyle, 'borderSize', 0, 20, 1);
+            addColorPicker(hotspot, config.spotStyle, 'borderColor', true);
+            hotspot.add(config.spotStyle, 'hoverSize', 5, 50, 1);
+            addColorPicker(hotspot, config.spotStyle, 'hoverColor', true);
+            hotspot.add(config.spotStyle, 'hoverBorderSize', 0, 20, 1);
+            addColorPicker(hotspot, config.spotStyle, 'hoverBorderColor', true);
+            hotspot.close();
+
+            gui.onChange(() => {
+                map.setOptions({
+                    ...config,
+                    rotation: config.rotation + 'deg',
+                    overlayImage: config.overlayImage ? overlayImage : null,
+                });
+
+                document.querySelector('.lil-gui').style.right = (config.position === 'top right') ? 'auto' : '';
+            });
+        </script>
+    </body>
+</html>

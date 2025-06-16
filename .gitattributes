@@ -1,0 +1,2 @@
+*.bin filter=lfs diff=lfs merge=lfs -text
+pointclouds/Salle_TCO/octree.bin filter=lfs diff=lfs merge=lfs -text

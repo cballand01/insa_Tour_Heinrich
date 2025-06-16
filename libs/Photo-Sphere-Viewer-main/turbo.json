@@ -1,0 +1,87 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "envMode": "loose",
+  "globalDependencies": [
+    ".mocharc.json",
+    ".nycrc.json",
+    ".stylelintrc.json",
+    "build/*",
+    "build/plugins/*",
+    "build/templates/*",
+    "eslint.config.mjs",
+    "packages/shared/*.{ts,scss,glsl}",
+    "tsconfig.json"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "src/**"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
+    "instrument": {
+      "dependsOn": [
+        "build"
+      ],
+      "cache": false
+    },
+    "lint": {
+      "inputs": [
+        "src/**"
+      ]
+    },
+    "@photo-sphere-viewer/e2e#lint": {
+      "inputs": [
+        "e2e/**",
+        "support/**",
+        "utils/**"
+      ]
+    },
+    "test": {
+      "inputs": [
+        "src/**",
+        "tests/**"
+      ],
+      "outputs": [
+        "reports/**"
+      ]
+    },
+    "watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "//#watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "build-doc": {
+      "cache": false
+    },
+    "//#build-doc": {
+      "dependsOn": [
+        "@photo-sphere-viewer/docs#build-doc"
+      ],
+      "cache": false
+    },
+    "serve-doc": {
+      "cache": false
+    },
+    "npm-link": {
+      "dependsOn": [
+        "build"
+      ],
+      "cache": false
+    },
+    "publish-dist": {
+      "dependsOn": [
+        "^publish-dist"
+      ],
+      "cache": false
+    }
+  }
+}

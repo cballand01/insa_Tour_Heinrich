@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - compass demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/markers-plugin/index.css" />
+        <link rel="stylesheet" href="/dist/compass-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "lil-gui": "/node_modules/three/examples/jsm/libs/lil-gui.module.min.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/compass-plugin": "/dist/compass-plugin/index.module.js",
+                    "@photo-sphere-viewer/markers-plugin": "/dist/markers-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { GUI } from 'lil-gui';
+            import { addColorPicker } from './scripts/LilGuiColorPicker.js';
+            import { addTextarea } from './scripts/LilGuiTextarea.js';
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { CompassPlugin } from '@photo-sphere-viewer/compass-plugin';
+            import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere.jpg',
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                plugins: [
+                    [CompassPlugin, {
+                        // size: '200px',
+                        // coneColor: 'rgba(150, 50, 50, 0.5)',
+                        // navigationColor: 'rgba(200, 200, 0, 0.5)',
+                        // position: 'bottom left',
+                        // navigation: false,
+                        // resetPitch: false,
+                        hotspots: [
+                            { yaw: '0deg' },
+                            { yaw: '90deg' },
+                            { yaw: '180deg' },
+                            { yaw: '270deg' },
+                        ],
+                    }],
+                    [MarkersPlugin, {
+                        markers: (() => {
+                            const m = [];
+                            for (let i = 0, l = Math.random() * 2 + 2; i < l; i++) {
+                                m.push({
+                                    id: `#${i}`,
+                                    position: {
+                                        yaw: ((i + Math.random()) * 2 * Math.PI) / l,
+                                        pitch: (Math.random() * Math.PI) / 3 - Math.PI / 6,
+                                    },
+                                    image: baseUrl + 'pictos/pin-red.png',
+                                    size: { width: 32, height: 32 },
+                                    anchor: 'bottom center',
+                                    data: {
+                                        compass: '#cc3333',
+                                    },
+                                });
+                            }
+
+                            m.push({
+                                id: 'polygon',
+                                polygonPixels: [
+                                    [2941, 1413], [3042, 1402], [3222, 1419], [3433, 1463],
+                                    [3480, 1505], [3438, 1538], [3241, 1543], [3041, 1555],
+                                    [2854, 1559], [2739, 1516], [2775, 1469], [2941, 1413],
+                                ],
+                                svgStyle: {
+                                    fill: 'rgba(255,0,0,0.2)',
+                                    stroke: 'rgba(255, 0, 50, 0.8)',
+                                    strokeWidth: '2px',
+                                },
+                                data: {
+                                    compass: 'rgba(255, 0, 50, 0.8)',
+                                },
+                            });
+
+                            m.push({
+                                id: 'polyline',
+                                polylinePixels: [
+                                    [2478, 1635], [2184, 1747], [1674, 1953], [1166, 1852],
+                                    [709, 1669], [301, 1519], [94, 1399], [34, 1356],
+                                ],
+                                svgStyle: {
+                                    stroke: 'rgba(80, 150, 50, 0.8)',
+                                    strokeLinecap: 'round',
+                                    strokeLinejoin: 'round',
+                                    strokeWidth: '20px',
+                                },
+                                data: {
+                                    compass: 'rgba(80, 150, 50, 0.8)',
+                                },
+                            });
+
+                            return m;
+                        })(),
+                    }],
+                ],
+            });
+
+            const compass = viewer.getPlugin(CompassPlugin);
+
+            window.viewer = viewer;
+
+            const config = {
+                size: compass.config.size,
+                backgroundSvg: compass.config.backgroundSvg,
+                position: compass.config.position.join(' '),
+                navigation: compass.config.navigation,
+                resetPitch: compass.config.resetPitch,
+                coneColor: compass.config.coneColor,
+                navigationColor: compass.config.navigationColor,
+                hotspotColor: compass.config.hotspotColor,
+            };
+
+            const gui = new GUI({ title: 'Compass Plugin Options' });
+
+            gui.add(config, 'size');
+            addTextarea(gui, config, 'backgroundSvg', 10);
+            gui.add(config, 'position', ['top left', 'top right', 'bottom left', 'bottom right']);
+            gui.add(config, 'navigation');
+            gui.add(config, 'resetPitch');
+            addColorPicker(gui, config, 'coneColor');
+            addColorPicker(gui, config, 'navigationColor');
+            addColorPicker(gui, config, 'hotspotColor');
+
+            gui.onChange(() => {
+                compass.setOptions({
+                    ...config,
+                });
+
+                document.querySelector('.lil-gui').style.right = (config.position === 'top right') ? 'auto' : '';
+            });
+        </script>
+    </body>
+</html>

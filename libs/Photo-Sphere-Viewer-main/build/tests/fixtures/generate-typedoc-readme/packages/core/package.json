@@ -1,0 +1,7 @@
+{
+  "name": "@photo-sphere-viewer/core",
+  "version": "0.0.0",
+  "description": "A JavaScript library to display 360° panoramas.",
+  "homepage": "https://photo-sphere-viewer.js.org",
+  "license": "MIT"
+}
