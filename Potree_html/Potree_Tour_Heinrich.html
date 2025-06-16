@@ -8,7 +8,7 @@
 
   
   <!-- LIGNE À AJOUTER POUR LE FAVICON -->
-  <link rel="icon" href="https://storage.googleapis.com/insa_test/Images_Logo/Logo.png" type="image/png">
+  <link rel="icon" href="https://storage.googleapis.com/insa_test/Images_Logo/Logo1.png" type="image/png">
 
   <!-- Chargement des polices Google -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -174,7 +174,7 @@
       </div>
       <!-- Accordéon pour présenter la présentation PRT -->
       <div class="accordion-item">
-        <div class="accordion-header">présentation du P.R.T.</div>
+        <div class="accordion-header">Présentation du P.R.T.</div>
         <div class="accordion-content">
           <p>
            Lisa Urfer et François Potentini présentent leur projet de recherche technologique : 
@@ -353,7 +353,7 @@
   </div>
     
   <!-- Lien vers le site de la SNCF avec affichage du logo -->
-  <a href="https://www.sncf-reseau.com/fr" target="_blank">
+  <a href="https://topographie.insa-strasbourg.fr/" target="_blank">
     <img id="logo" src="https://storage.googleapis.com/insa_test/Images_Logo/Insas_logo.png" alt="Logo SNCF">
   </a>
 
@@ -615,60 +615,6 @@
           1000
         );
       });
-
-       //---------------- Annotations audios ----------------//
-      // Icône pour l’annotation sonore 1 (télephone)
-      let iconSound1 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/music.svg"
-             class="annotation-action-icon"
-             style="filter: invert(1); cursor: pointer;"
-             alt="Son" />
-      </span>`);
-      iconSound1.find("img").click(event => {
-        event.stopPropagation();
-        pauseAllAnnotationAudio();
-        const audio = document.getElementById("audioAnnotation1");
-        audio.currentTime = 0;    // si on veut pouvoir relancer immédiatement
-        audio.play();
-        // Ouverture du popup texte (utilise votre fonction existante)
-        showTextAnnotationCustom(`
-          <b>Appel téléphonique à un conducteur TGV</b><br>
-          <em>Source :  Vidéo « PAR LGV Sud-Est Paris Gare de Lyon (8 sur 9) » disponible sur la chaîne YouTube « Rails et Histoire » </em>
-        `);
-      });
-      let annotationSound1 = new Potree.Annotation({
-        position: new THREE.Vector3(6.45, 10.30, 1.27),
-        title: iconSound1
-      });
-      annotationSound1.visible = true;
-      viewer.scene.annotations.add(annotationSound1);
-
-      // Icône pour l’annotation sonore (ambiance)
-      let iconSound2 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/music.svg"
-             class="annotation-action-icon"
-             style="filter: invert(1); cursor: pointer;"
-             alt="Son" />
-      </span>`);
-      iconSound2.find("img").click(event => {
-        event.stopPropagation();
-        pauseAllAnnotationAudio();
-        const audio = document.getElementById("audioAnnotation2");
-        audio.currentTime = 0;    // si on veut pouvoir relancer immédiatement
-        audio.play();
-        // Ouverture du popup texte (utilise votre fonction existante)
-        showTextAnnotationCustom(`
-          <b>Ambiance sonore du PAR</b><br>
-          <em>Source :  Vidéo « PAR LGV Sud-Est Paris Gare de Lyon (8 sur 9) » disponible sur la chaîne YouTube « Rails et Histoire » </em>
-        `);
-      });
-      let annotationSound2 = new Potree.Annotation({
-        position: new THREE.Vector3(4.71, 9.65, 3.10),
-        title: iconSound2
-      });
-      annotationSound2.visible = true;
-      viewer.scene.annotations.add(annotationSound2);
-
 
       //---------------- Annotations textuelles ----------------//
       // Annotation texte 1 Zoom
@@ -1257,54 +1203,6 @@
       annotation3D7.visible = true;
       viewer.scene.annotations.add(annotation3D7);
       
-
-
-      //---------------- Liens autre salle ----------------//
-      // Annotation Goto 1
-      let icongoto1 = $(`<!-- Icône pour annotation qui ouvre SDR.html --> 
-      <span style="display: flex; align-items: center;">
-        <!-- Titre textuel à gauche -->
-        <span style="margin-right: 10px; font-size: 16px; color: white;">Salle des relais</span>
-        <!-- Logo à côté du titre -->
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/goto.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>
-    `);
-    icongoto1.find("img").click((event) => {
-        event.stopPropagation();
-        window.open("/Potree_Sncf_Projet/Potree_html/Potree_SDR.html", "_blank");
-      });
-      let lienSDR = new Potree.Annotation({
-        position: new THREE.Vector3(8.96, 15.89, 1.75),
-        title: icongoto1,
-        description: "",
-      });
-      addAnnotationClickHandler(lienSDR);
-      lienSDR.visible = true;
-      viewer.scene.annotations.add(lienSDR);
-
-      // Annotation Goto 2
-      let icongoto2 = $(`<!-- Icône pour annotation qui ouvre EXTERIEUR.html --> 
-      <span style="display: flex; align-items: center;">
-        <!-- Titre textuel à gauche -->
-        <span style="margin-right: 10px; font-size: 16px; color: white;">Extérieur du centre</span>
-        <!-- Logo à côté du titre -->
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/goto.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>
-    `);
-    icongoto2.find("img").click((event) => {
-        event.stopPropagation();
-        window.open("/Potree_Sncf_Projet/Potree_html/Potree_EXTERIEUR.html", "_blank");
-      });
-      let lienEXT = new Potree.Annotation({
-        position: new THREE.Vector3(2.35, 2.43, 1.36),
-        title: icongoto2,
-        description: "",
-      });
-      addAnnotationClickHandler(lienEXT);
-      lienEXT.visible = true;
-      viewer.scene.annotations.add(lienEXT);
-
-
       //---------------- Liens 360° ----------------//
       // Annotation 360° 1
       let icon3601 = $(`
@@ -1376,11 +1274,9 @@
 
 
       //---------------- Seuils de distance d'affichage ----------------//
-      const distanceThresholdAudio = 4; //audios
       const distanceThresholdText = 4; //textes
       const distanceThresholdImage = 4; //images
       const distanceThreshold3D = 4; //liens3D
-      const distanceGoto = 7; //liens html
       const distanceThresholdExp = 1; //textes rapprochés
       const distanceThreshold360 = 5; //360
 
@@ -1420,11 +1316,6 @@
           let cameraPos = viewer.scene.getActiveCamera().position;
 
           let annotations = [
-          // Annotations audios
-          { position: annotationSound1.position, maxDistance: distanceThresholdAudio, minGisement: 150, maxGisement: 300, annotation: annotationSound1 },
-          { position: annotationSound2.position, maxDistance: distanceThresholdAudio, minGisement: 0, maxGisement: 360, annotation: annotationSound2 },
-
-            
           // Annotations textuelles
           { position: annotationTexte1.position, maxDistance: distanceThresholdText, minGisement: 150, maxGisement: 300, annotation: annotationTexte1 },
           { position: annotationTexte2.position, maxDistance: 5, minGisement: 170, maxGisement: 330, annotation: annotationTexte2 },
@@ -1459,10 +1350,6 @@
           { position: annotation3D5.position, maxDistance: distanceThreshold3D, minGisement: 150, maxGisement: 300, annotation: annotation3D5 },  //PRS 3
           { position: annotation3D6.position, maxDistance: 3.5, minGisement: 300, maxGisement: 50, annotation: annotation3D6 },  //Tableau IDF
           { position: annotation3D7.position, maxDistance: 5, minGisement: 170, maxGisement: 330, annotation: annotation3D7 },  //Tableau Total
-
-          // Lien vers autre salle
-          { position: lienSDR.position, maxDistance: distanceGoto, minGisement: 130, maxGisement: 165, annotation: lienSDR },
-          { position: lienEXT.position, maxDistance: distanceGoto, minGisement: 320, maxGisement: 355, annotation: lienEXT },
 
           // Panoramiques 360
           { position: annotation3601.position, maxDistance: distanceThreshold360, minGisement: 0, maxGisement: 360, annotation: annotation3601 },
