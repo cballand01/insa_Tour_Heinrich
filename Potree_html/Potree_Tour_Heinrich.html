@@ -640,16 +640,16 @@
       annotationTexte1.visible = true;
       viewer.scene.annotations.add(annotationTexte1);
 
-      // Annotation texte 3 Zoom
+      // Annotation texte 3 Zoom (charpente)
       let iconInfo3 = $(`<span>
         <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
       </span>`);
       let annotationTexte3 = new Potree.Annotation({
-          position: new THREE.Vector3(4.20, 12.36, 1.21),
+          position: new THREE.Vector3(20.26, 19.83, 26.07),
           title: iconInfo3, // Ici on met l'élément HTML au lieu du texte
-          description: "L’alimentation électrique de la LGV est assurée par le régulateur de sous-station, qui supervise les caténaires primaires via le tableau optique (zone inférieure à fond bleu). Sa présence au PAR optimise considérablement la gestion du trafic, puisque toute anomalie est immédiatement signalée par un voyant clignotant.",
-          cameraPosition: new THREE.Vector3(5.89, 11.81, 1.72),
-          cameraTarget: new THREE.Vector3(4.20, 12.36, 1.21)
+          description: "La charpente en bois date de 1408.",
+          cameraPosition: new THREE.Vector3(20.13, 19.48, 26.01),
+          cameraTarget: new THREE.Vector3(20.26, 19.83, 26.07)
       });
       addTextAnnotationClickHandler(annotationTexte3);
       annotationTexte3.visible = true;
@@ -1218,7 +1218,7 @@
           let annotations = [
           // Annotations textuelles
           { position: annotationTexte1.position, maxDistance: 15, minGisement: 140, maxGisement: 280, annotation: annotationTexte1 },
-          { position: annotationTexte3.position, maxDistance: distanceThresholdText, minGisement: 130, maxGisement: 300, annotation: annotationTexte3 },
+          { position: annotationTexte3.position, maxDistance: 5, minGisement: 140, maxGisement: 280, annotation: annotationTexte3 },
 
           // Annotations images
           { position: annotationImage1.position, maxDistance: distanceThresholdImage, minGisement: 130, maxGisement: 320, annotation: annotationImage1 },  // PRS 3
