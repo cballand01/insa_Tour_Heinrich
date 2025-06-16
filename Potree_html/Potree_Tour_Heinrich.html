@@ -617,35 +617,28 @@
       });
 
       //---------------- Annotations textuelles ----------------//
-      // Annotation texte 1 Zoom
+      // Annotation texte 1 Zoom (Toiture)
       let iconInfo1 = $(`<span>
         <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
       </span>`);
       let annotationTexte1 = new Potree.Annotation({
-          position: new THREE.Vector3(5.46, 9.28, 1.24),
+          position: new THREE.Vector3(23.22, 18.54, 24.04),
           title: iconInfo1, // Ici on met l'élément HTML au lieu du texte
-          description: "Un Poste de Relais à Transit Souple (PRS) est un dispositif de commande ferroviaire qui permet de gérer la circulation des trains dans des zones où plusieurs itinéraires se croisent ou se séparent. Contrairement aux systèmes traditionnels qui utilisent des relais mécaniques ou électromagnétiques rigides, le PRS repose sur des mécanismes à transit souple, offrant ainsi une plus grande souplesse et une adaptation plus facile aux besoins spécifiques du réseau.",
-          cameraPosition: new THREE.Vector3(6.19, 6.30, 1.99),
-          cameraTarget: new THREE.Vector3(5.31, 8.20, 1.25)
+          description: `
+            <div style="display: flex; align-items: flex-start; gap: 15px;">
+              <img src="https://storage.googleapis.com/insa_test/Images_Logo/Galerie/toiture.jpg" alt="Détail de la toiture" style="width: 40%; border-radius: 5px;" />
+              <div style="flex: 1;">
+                <p>Détail de la toiture d'une tour similaire, dite Guldenturm, démolie en 1874. La couverture est en tuiles creuses, associée à un essentage constitué de tuiles plates en arc brisé sous l’appui des bretèches, ainsi que des épis de faîtage en métal.</p>
+                <p style="font-size: 0.8em; color: #aaa; margin: 0 0 10px 0;"><em>Source : OPEN Edition Journals</em></p>
+              </div>
+            </div>
+          `,
+          cameraPosition: new THREE.Vector3(27.99, 16.67, 24.91),
+          cameraTarget: new THREE.Vector3(23.22, 18.54, 24.04)
       });
       addTextAnnotationClickHandler(annotationTexte1);
       annotationTexte1.visible = true;
       viewer.scene.annotations.add(annotationTexte1);
-      
-      // Annotation texte 2 Zoom
-      let iconInfo2 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationTexte2 = new Potree.Annotation({
-          position: new THREE.Vector3(0.98, 10.26, 3.00),
-          title: iconInfo2, // Ici on met l'élément HTML au lieu du texte
-          description: "Le but du Tableau de Contrôle Optique (TCO) est de fournir une vue d'ensemble du trafic ferroviaire en temps réel, permettant aux régulateurs de prendre des décisions éclairées pour assurer la sécurité, la fluidité et l'efficacité des trajets des trains.",
-          cameraPosition: new THREE.Vector3(1.58, 9.79, 2.70),
-          cameraTarget: new THREE.Vector3(0.93, 10.07, 2.70)
-      });
-      addTextAnnotationClickHandler(annotationTexte2);
-      annotationTexte2.visible = true;
-      viewer.scene.annotations.add(annotationTexte2);
 
       // Annotation texte 3 Zoom
       let iconInfo3 = $(`<span>
@@ -676,88 +669,9 @@
       addTextAnnotationClickHandler(annotationTexte4);
       annotationTexte4.visible = true;
       viewer.scene.annotations.add(annotationTexte4);
-      
 
-      //---------------- Annotations textuelles explications ----------------//
-      // Annotation texte explication 1
-      let iconExp1 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationExp1 = new Potree.Annotation({
-          position: new THREE.Vector3(1.12, 10.66, 2.53),
-          title: iconExp1, // Ici on met l'élément HTML au lieu du texte
-          description: "<b>Numérotation des TGV :</b><br><br>Les TGV sont représentés par des numéros à <b>quatre chiffres</b> :<br>- <b>Pairs</b> en direction de Paris<br>- <b>Impairs</b> en direction de Lyon<br><br>Les TGV <i>sans voyageurs</i> portent des numéros à <b>six chiffres</b>.<br>Les trains <i>exceptionnels</i> sont identifiés par des numéros à <b>cinq chiffres</b>.",
-        });
-      addTextAnnotationClickHandler(annotationExp1);
-      annotationExp1.visible = true;
-      viewer.scene.annotations.add(annotationExp1);
-      
-      // Annotation texte explication 2
-      let iconExp2 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationExp2 = new Potree.Annotation({
-          position: new THREE.Vector3(0.86, 9.93, 3.10),
-          title: iconExp2, // Ici on met l'élément HTML au lieu du texte
-          description: " Postes et villes traversés par la LGV, avec leurs points kilométriques associés. Les postes peuvent être contrôlés localement en cas de problème au PAR. ",
-      });
-      addTextAnnotationClickHandler(annotationExp2);
-      annotationExp2.visible = true;
-      viewer.scene.annotations.add(annotationExp2);
-      
-      // Annotation texte explication 3
-      let iconExp3 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationExp3 = new Potree.Annotation({
-          position: new THREE.Vector3(0.96, 10.22, 2.56),
-          title: iconExp3, // Ici on met l'élément HTML au lieu du texte
-          description: `
-          <div style="text-align: center;">
-            <span style="font-weight: bold;">&larr; Direction Paris</span>
-            <span style="color: gray;">(haut)</span><br>
-            <span style="font-weight: bold;">&rarr; Direction Lyon</span>
-            <span style="color: gray;">(bas)</span>
-          </div>
-        `,
-      });
-      addTextAnnotationClickHandler(annotationExp3);
-      annotationExp3.visible = true;
-      viewer.scene.annotations.add(annotationExp3);
-      
-      // Annotation texte explication 4
-      let iconExp4 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationExp4 = new Potree.Annotation({
-          position: new THREE.Vector3(0.84, 9.84, 2.60),
-          title: iconExp4, // Ici on met l'élément HTML au lieu du texte
-          description: `
-            <div style="text-align: center;">
-              <span style="color: green;">Lumière verte</span> = Section libre<br>
-              <span style="color: red;">Lumière rouge</span> = TGV en ligne
-            </div>
-          `,
-      });
-      addTextAnnotationClickHandler(annotationExp4);
-      annotationExp4.visible = true;
-      viewer.scene.annotations.add(annotationExp4);
-
-      // Annotation texte explication 5
-      let iconExp5 = $(`<span>
-        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-      </span>`);
-      let annotationExp5 = new Potree.Annotation({
-          position: new THREE.Vector3(1.10, 10.61, 2.65),
-          title: iconExp5, // Ici on met l'élément HTML au lieu du texte
-          description: "Chaque section de 20 km de voie, représentée par une colonne d’affichage, peut contenir plusieurs trains. Un voyant de débordement peut même indiquer un nombre de trains supérieur à la capacité d’affichage.",
-      });
-      addTextAnnotationClickHandler(annotationExp5);
-      annotationExp5.visible = true;
-      viewer.scene.annotations.add(annotationExp5);
-      
       //---------------- Annotations imagées ----------------//
-      // Annotation Image 1 (PRS3)
+      // Annotation Image 1 (Toiture)
       let iconImage1 = $(`<!-- Icône image pour la première annotation --> 
         <span>
           <img src="/Potree_Sncf_Projet/build/potree/resources/icons/picture.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
@@ -767,7 +681,7 @@
         event.stopPropagation();
         viewer.scene.view.setView(annotationImage1.cameraPosition, annotationImage1.cameraTarget, 1000);
         setTimeout(() => {
-          const imageUrl = "https://storage.googleapis.com/projet-potree-sncf/Images/Images_Techniques/175A0701.JPG";
+          const imageUrl = "https://storage.googleapis.com/insa_test/Images_Logo/Galerie/toiture.jpg";
           const imageDescription = "Poste tout relais à transit souple 19 - 22";
           $("#popupImage").attr("src", imageUrl);
           $("#popupText").text(imageDescription);
@@ -1317,17 +1231,10 @@
 
           let annotations = [
           // Annotations textuelles
-          { position: annotationTexte1.position, maxDistance: distanceThresholdText, minGisement: 150, maxGisement: 300, annotation: annotationTexte1 },
+          { position: annotationTexte1.position, maxDistance: 15, minGisement: 140, maxGisement: 280, annotation: annotationTexte1 },
           { position: annotationTexte2.position, maxDistance: 5, minGisement: 170, maxGisement: 330, annotation: annotationTexte2 },
           { position: annotationTexte3.position, maxDistance: distanceThresholdText, minGisement: 130, maxGisement: 300, annotation: annotationTexte3 },
           { position: annotationTexte4.position, maxDistance: distanceThresholdText, minGisement: 180, maxGisement: 330, annotation: annotationTexte4 },
-
-          // Annotations explicatives
-          { position: annotationExp1.position, maxDistance: distanceThresholdExp, minGisement: 170, maxGisement: 330, annotation: annotationExp1 },
-          { position: annotationExp2.position, maxDistance: distanceThresholdExp, minGisement: 170, maxGisement: 330, annotation: annotationExp2 },
-          { position: annotationExp3.position, maxDistance: distanceThresholdExp, minGisement: 170, maxGisement: 330, annotation: annotationExp3 },
-          { position: annotationExp4.position, maxDistance: distanceThresholdExp, minGisement: 170, maxGisement: 330, annotation: annotationExp4 },
-          { position: annotationExp5.position, maxDistance: distanceThresholdExp, minGisement: 170, maxGisement: 330, annotation: annotationExp5 },
 
           // Annotations images
           { position: annotationImage1.position, maxDistance: distanceThresholdImage, minGisement: 130, maxGisement: 320, annotation: annotationImage1 },  // PRS 3
