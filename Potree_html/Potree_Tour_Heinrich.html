@@ -655,6 +655,22 @@
       annotationTexte3.visible = true;
       viewer.scene.annotations.add(annotationTexte3);
 
+      // Annotation texte 4 Zoom (défense)
+      let iconInfo4 = $(`<span>
+        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
+      </span>`);
+      let annotationTexte4 = new Potree.Annotation({
+          position: new THREE.Vector3(17.93, 22.05, 22.50),
+          title: iconInfo4, // Ici on met l'élément HTML au lieu du texte
+          description: "L'étage somital était à l'origine destiné à la défense du site. Il offrait une vue dégagée pour surveiller les accès à la ville.",
+          cameraPosition: new THREE.Vector3(17.76, 20.20, 22.01),
+          cameraTarget: new THREE.Vector3(17.93, 22.05, 22.50)
+      });
+      addTextAnnotationClickHandler(annotationTexte4);
+      annotationTexte4.visible = true;
+      viewer.scene.annotations.add(annotationTexte4);
+
+
 
       //---------------- Annotations imagées ----------------//
       // Annotation Image 1 (Toiture)
@@ -1219,6 +1235,7 @@
           // Annotations textuelles
           { position: annotationTexte1.position, maxDistance: 15, minGisement: 140, maxGisement: 280, annotation: annotationTexte1 },
           { position: annotationTexte3.position, maxDistance: 5, minGisement: 140, maxGisement: 280, annotation: annotationTexte3 },
+          { position: annotationTexte4.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte4 },
 
           // Annotations images
           { position: annotationImage1.position, maxDistance: distanceThresholdImage, minGisement: 130, maxGisement: 320, annotation: annotationImage1 },  // PRS 3
@@ -1288,7 +1305,9 @@
       { name: "VUE N°1", position: new THREE.Vector3(20.85, 18.23, 25.42), target: new THREE.Vector3(17.028, 23.68, 25.02), audioId: null },
       { name: "VUE N°2", position: new THREE.Vector3(21.05, 24.55, 24.40), target: new THREE.Vector3(17.68, 18.64, 25.03), audioId: null },
       { name: "VUE N°3", position: new THREE.Vector3(17.66, 18.71, 24.95), target: new THREE.Vector3(19.67, 20.90, 24.03), audioId: null },
-      { name: "FIN DE LA VISITE", position: new THREE.Vector3(17.94, 18.38, 23.65), target: new THREE.Vector3(19.72, 20.82, 21.20), audioId: null }
+      { name: "VUE N°4", position: new THREE.Vector3(17.94, 18.38, 23.65), target: new THREE.Vector3(19.72, 20.82, 21.20), audioId: null },
+      { name: "VUE N°5", position: new THREE.Vector3(16.23, 21.71, 21.84), target: new THREE.Vector3(23.42, 21.48, 22.76), audioId: null },
+      { name: "XXXX", position: new THREE.Vector3(17.94, 18.38, 23.65), target: new THREE.Vector3(19.72, 20.82, 21.20), audioId: null }
     ];
 
     // Fonction de navigation vers un hotspot donné
