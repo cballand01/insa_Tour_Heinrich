@@ -512,12 +512,12 @@
     viewer.scene.scene.add(ambientLight);
     
     // Chargement du nuage de points via Potree.loadPointCloud
-    Potree.loadPointCloud("https://storage.googleapis.com/projet-potree-sncf/NuageTCO/Nuage_Sans_Sol_et_Tableaux/metadata.json", "Salle_TCO", function(e){
+    Potree.loadPointCloud("https://storage.googleapis.com/insa_test/Nuage_Tour_Heinrich/metadata.json", "Tour_Heinrich", function(e){
       viewer.scene.addPointCloud(e.pointcloud);
       let material = e.pointcloud.material;
       material.size = 1.3;
       material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-      e.pointcloud.position.set(0, 0, 0.14);
+      e.pointcloud.position.set(0, 0, 0);
     
       // Positionnement initial de la vue
       viewer.scene.view.setView(initialPosition, initialTarget);
