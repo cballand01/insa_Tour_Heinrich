@@ -742,6 +742,22 @@
       annotationTexte8.visible = true;
       viewer.scene.annotations.add(annotationTexte8);
 
+      // Annotation texte 9 Zoom (Histoire)
+      let iconInfo9 = $(`<span>
+        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
+      </span>`);
+      let annotationTexte9 = new Potree.Annotation({
+          position: new THREE.Vector3(21.11, 17.20, 20.17),
+          title: iconInfo9, // Ici on met l'élément HTML au lieu du texte
+          description: "La tour Heinrich, l’une des quatre tours médiévales des Ponts Couverts de Strasbourg, a été construite au cours du XIIIᵉ siècle, probablement vers 1250, dans le cadre du système défensif de la ville. Contrairement à d'autres édifices alsaciens bâtis en grès, elle est réalisée en brique avec des murs particulièrement épais, adaptés aux exigences militaires de l’époque. Elle faisait partie d’un ensemble stratégique destiné à protéger les accès par l’Ill et à surveiller les abords ouest de la cité. Au XVIᵉ siècle, la tour est partiellement réaménagée pour accueillir des cellules de prison. Elle doit son nom à un ancien gardien ou officier, selon la tradition locale. Si les ponts d’origine ont été remplacés au XIXᵉ siècle, la tour Heinrich a été conservée et restaurée, demeurant un témoin emblématique du passé fortifié de Strasbourg.",
+          cameraPosition: new THREE.Vector3(20.30, 10.32, 20.12),
+          cameraTarget: new THREE.Vector3(21.11, 17.20, 20.17)
+      });
+      addTextAnnotationClickHandler(annotationTexte9);
+      annotationTexte9.visible = true;
+      viewer.scene.annotations.add(annotationTexte9);
+
+
 
       //---------------- Annotations imagées ----------------//
       // Annotation Image 1 (Grafitis)
@@ -770,90 +786,6 @@
       addAnnotationClickHandler(annotationImage1);
       annotationImage1.visible = true;
       viewer.scene.annotations.add(annotationImage1);
-      
-    
-      // Annotation avec image 2 (Ile de France 1)
-      let iconImage2 = $(`<!-- Icône image pour la deuxième annotation --> 
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/picture.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      iconImage2.find("img").click((event) => {
-        event.stopPropagation();
-        viewer.scene.view.setView(annotationImage2.cameraPosition, annotationImage2.cameraTarget, 1000);
-        setTimeout(() => {
-          const imageUrl = "https://storage.googleapis.com/projet-potree-sncf/Images/Images_Techniques/175A0763.JPG";
-          const imageDescription = "Poste de gestion Île-de-France n°1";
-          $("#popupImage").attr("src", imageUrl);
-          $("#popupText").text(imageDescription);
-          $("#imagePopup").css("display", "flex");
-        }, 2000);
-      });
-      let annotationImage2 = new Potree.Annotation({
-        position: new THREE.Vector3(7.48, 2, 1.98),
-        title: iconImage2,
-        cameraPosition: new THREE.Vector3(7.78, 3.33, 2.03),
-        cameraTarget: new THREE.Vector3(7.47, 1.99, 1.66)
-      });
-      addAnnotationClickHandler(annotationImage2);
-      annotationImage2.visible = true;
-      viewer.scene.annotations.add(annotationImage2);
-      
-
-      // Annotation avec image 3 (Ile de France 2)
-      let iconImage3 = $(`<!-- Icône image pour la troisième annotation --> 
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/picture.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      iconImage3.find("img").click((event) => {
-        event.stopPropagation();
-        viewer.scene.view.setView(annotationImage3.cameraPosition, annotationImage3.cameraTarget, 1000);
-        setTimeout(() => {
-          const imageUrl = "https://storage.googleapis.com/projet-potree-sncf/Images/Images_Techniques/175A0764.JPG";
-          const imageDescription = "Poste de gestion Île-de-France n°2";
-          $("#popupImage").attr("src", imageUrl);
-          $("#popupText").text(imageDescription);
-          $("#imagePopup").css("display", "flex");
-        }, 2000);
-      });
-      let annotationImage3 = new Potree.Annotation({
-        position: new THREE.Vector3(6.49, 2.10, 1.61),
-        title: iconImage3,
-        cameraPosition: new THREE.Vector3(6.96, 3.09, 1.75),
-        cameraTarget: new THREE.Vector3(6.49, 2.10, 1.61)
-      });
-      addAnnotationClickHandler(annotationImage3);
-      annotationImage3.visible = true;
-      viewer.scene.annotations.add(annotationImage3);
-      
-
-      // Annotation avec image 4 (Ile de France 3)
-      let iconImage4 = $(`<!-- Icône image pour la quatrième annotation --> 
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/picture.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      iconImage4.find("img").click((event) => {
-        event.stopPropagation();
-        viewer.scene.view.setView(annotationImage4.cameraPosition, annotationImage4.cameraTarget, 1000);
-        setTimeout(() => {
-          const imageUrl = "https://storage.googleapis.com/projet-potree-sncf/Images/Images_Techniques/175A0762.JPG";
-          const imageDescription = "Poste de gestion Île-de-France n°3";
-          $("#popupImage").attr("src", imageUrl);
-          $("#popupText").text(imageDescription);
-          $("#imagePopup").css("display", "flex");
-        }, 2000);
-      });
-      let annotationImage4 = new Potree.Annotation({
-        position: new THREE.Vector3(5.78, 2.88, 1.96),
-        title: iconImage4,
-        cameraPosition: new THREE.Vector3(6.16, 3.92, 1.91),
-        cameraTarget: new THREE.Vector3(5.70, 2.97, 1.58)
-      });
-      addAnnotationClickHandler(annotationImage4);
-      annotationImage4.visible = true;
-      viewer.scene.annotations.add(annotationImage4);
 
       //---------------- Liens visualisation 3D ----------------//
       // Annotation 3D 1
@@ -967,13 +899,11 @@
           { position: annotationTexte6.position, maxDistance: 3, minGisement: 30, maxGisement: 210, annotation: annotationTexte6 },
           { position: annotationTexte7.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte7 },
           { position: annotationTexte8.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte8 },
+          { position: annotationTexte9.position, maxDistance: 15, minGisement: 140, maxGisement: 280, annotation: annotationTexte9 },
 
           // Annotations images
           { position: annotationImage1.position, maxDistance: 3, minGisement: 310, maxGisement: 50, annotation: annotationImage1 },  // Gravures
-          { position: annotationImage2.position, maxDistance: 3, minGisement: 240, maxGisement: 50, annotation: annotationImage2 }, //IDF 1
-          { position: annotationImage3.position, maxDistance:3, minGisement: 240, maxGisement: 50, annotation: annotationImage3 },  //IDF 2
-          { position: annotationImage4.position, maxDistance: 3, minGisement: 240, maxGisement: 50, annotation: annotationImage4 },  //IDF 3
-
+    
           // Annotations 3D
           { position: annotation3D1.position, maxDistance: 3, minGisement: 30, maxGisement: 210, annotation: annotation3D1 },  //Cellule 3
           { position: annotation3D2.position, maxDistance: 3, minGisement: 30, maxGisement: 210, annotation: annotation3D2 },  //Cellule 2
