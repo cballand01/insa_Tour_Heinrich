@@ -455,6 +455,17 @@
     </div>
   </div>
 
+  <!-- POPUP SKETCHFAB -->
+  <div id="sketchfabPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.9); z-index:9999;">
+    <span id="closeSketchfabPopup" style="position:absolute; top:20px; right:30px; font-size:30px; color:white; cursor:pointer;">&times;</span>
+    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+      <iframe id="sketchfabIframe" title="Sketchfab model" frameborder="0" allowfullscreen
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        style="width:90vw; height:90vh; border:none;">
+      </iframe>
+    </div>
+  </div>
+
   <!-- Éléments audio pour les hotspots -->
   <audio id="audioHotspot0" src="https://storage.googleapis.com/projet-potree-sncf/Audios/Visite1.mp3" preload="auto"></audio>
   <audio id="audioHotspot1" src="https://storage.googleapis.com/projet-potree-sncf/Audios/02.mp3" preload="auto"></audio>
@@ -995,17 +1006,17 @@
 
       //---------------- Liens visualisation 3D ----------------//
       // Annotation 3D 1
-      let icon3D1 = $(`<!-- Icône pour annotation 3D qui ouvre TCO_Tableau.html --> 
+      let icon3D1 = $(`<!-- Icône pour annotation 3D qui ouvre cellule 3 --> 
         <span>
           <img src="/Potree_Sncf_Projet/build/potree/resources/icons/3d.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
         </span>
       `);
       icon3D1.find("img").click((event) => {
         event.stopPropagation();
-        window.open("/Potree_Sncf_Projet/3DHOP_html/3DHOP_TCO_Tableau_1.html", "_blank");
+        openSketchfabPopup("https://sketchfab.com/models/c55dcf8b44d949d28111d4c27a5f6c21/embed");
       });
       let annotation3D1 = new Potree.Annotation({
-        position: new THREE.Vector3(9.38, 11.03, 2.30),
+        position: new THREE.Vector3(19.96, 19.75, 13.63),
         title: icon3D1,
         description: "",
       });
@@ -1135,81 +1146,12 @@
       viewer.scene.annotations.add(annotation3D7);
       
       //---------------- Liens 360° ----------------//
-      // Annotation 360° 1
-      let icon3601 = $(`
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/360.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      icon3601.find("img").click((event) => {
-        event.stopPropagation();
-        open360Viewer("https://storage.googleapis.com/projet-potree-sncf/Images/Images_360/R0010641_20250306162238.JPG");
-      });
-      let annotation3601 = new Potree.Annotation({
-        position: new THREE.Vector3(7.00, 8.00, 1.70),
-        title: icon3601
-      });
-      annotation3601.visible = true;
-      viewer.scene.annotations.add(annotation3601);
-
-      // Annotation 360° 2
-      let icon3602 = $(`
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/360.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      icon3602.find("img").click((event) => {
-        event.stopPropagation();
-        open360Viewer("https://storage.googleapis.com/projet-potree-sncf/Images/Images_360/R0010642_20250306162347.JPG");
-      });
-      let annotation3602 = new Potree.Annotation({
-        position: new THREE.Vector3(4.06, 9.95, 1.50),
-        title: icon3602
-      });
-      annotation3602.visible = true;
-      viewer.scene.annotations.add(annotation3602);
-
-      // Annotation 360° 3 (salle des relais)
-      let icon3603 = $(`
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/360.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      icon3603.find("img").click((event) => {
-        event.stopPropagation();
-        open360Viewer("https://storage.googleapis.com/projet-potree-sncf/Images/Images_360/8192x4096_DJI_20250306104823_0673_D_ETN.png");
-      });
-      let annotation3603 = new Potree.Annotation({
-        position: new THREE.Vector3(8.96, 15.89, 1.35),
-        title: icon3603
-      });
-      annotation3603.visible = true;
-      viewer.scene.annotations.add(annotation3603);
-
-      // Annotation 360° 4 (hauteur)
-      let icon3604 = $(`
-        <span>
-          <img src="/Potree_Sncf_Projet/build/potree/resources/icons/360.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
-        </span>
-      `);
-      icon3604.find("img").click((event) => {
-        event.stopPropagation();
-        open360Viewer("https://storage.googleapis.com/projet-potree-sncf/Images/Images_360/8192x4096_DJI_20250306140048_0775_D_ETN.png");
-      });
-      let annotation3604 = new Potree.Annotation({
-        position: new THREE.Vector3(7.00, 8.00, 3.50),
-        title: icon3604
-      });
-      annotation3604.visible = true;
-      viewer.scene.annotations.add(annotation3604);
-
-
+      
       //---------------- Seuils de distance d'affichage ----------------//
       const distanceThresholdText = 4; //textes
       const distanceThresholdImage = 4; //images
       const distanceThreshold3D = 4; //liens3D
       const distanceThresholdExp = 1; //textes rapprochés
-      const distanceThreshold360 = 5; //360
 
       // Fonction pour vérifier si la caméra est dans la plage de gisement et dans la distance de l'annotation
       function isCameraInVisibilityCone(cameraPos, annotationPos, maxDistance, minGisement, maxGisement) {
@@ -1273,13 +1215,7 @@
           { position: annotation3D4.position, maxDistance: distanceThreshold3D, minGisement: 180, maxGisement: 330, annotation: annotation3D4 },  //PRS 2
           { position: annotation3D5.position, maxDistance: distanceThreshold3D, minGisement: 150, maxGisement: 300, annotation: annotation3D5 },  //PRS 3
           { position: annotation3D6.position, maxDistance: 3.5, minGisement: 300, maxGisement: 50, annotation: annotation3D6 },  //Tableau IDF
-          { position: annotation3D7.position, maxDistance: 5, minGisement: 170, maxGisement: 330, annotation: annotation3D7 },  //Tableau Total
-
-          // Panoramiques 360
-          { position: annotation3601.position, maxDistance: distanceThreshold360, minGisement: 0, maxGisement: 360, annotation: annotation3601 },
-          { position: annotation3602.position, maxDistance: distanceThreshold360, minGisement: 0, maxGisement: 360, annotation: annotation3602 },
-          { position: annotation3603.position, maxDistance: 7, minGisement: 130, maxGisement: 165, annotation: annotation3603 },
-          { position: annotation3604.position, maxDistance: distanceThreshold360, minGisement: 330, maxGisement: 140, annotation: annotation3604 }
+          { position: annotation3D7.position, maxDistance: 5, minGisement: 170, maxGisement: 330, annotation: annotation3D7 }  //Tableau Total
           ];
 
           // Vérification de la visibilité de chaque annotation
@@ -2312,6 +2248,22 @@
       });
     }
   })();
+  </script>
+
+  <script>
+    function openSketchfabPopup(modelUrl) {
+      const popup = document.getElementById("sketchfabPopup");
+      const iframe = document.getElementById("sketchfabIframe");
+      iframe.src = modelUrl;
+      popup.style.display = "block";
+    }
+  
+    document.getElementById("closeSketchfabPopup").addEventListener("click", () => {
+      const popup = document.getElementById("sketchfabPopup");
+      const iframe = document.getElementById("sketchfabIframe");
+      popup.style.display = "none";
+      iframe.src = "";  // Vide pour libérer les ressources
+    });
   </script>
   
 </body>
