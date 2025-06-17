@@ -63,6 +63,21 @@
       font-size: 0.9rem;
       font-weight: 500;
     }
+
+    #loaderInfo {
+      border: 8px solid #444;
+      border-top: 8px solid #1caad9;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
@@ -323,25 +338,23 @@
     <div id="instructionsPopupContent">
         <!-- Conteneur des images et des phrases -->
         <div id="popupImagesContainer">
-            <!-- Image et phrase 1 -->
-            <p>Contrôlez le son et naviguez dans la narration :</p>
-            <img src="https://storage.googleapis.com/projet-potree-sncf/Images/Images_Interface/image-audio.png" alt="Contrôle audio">
-
-            <!-- Image et phrase 2 -->
+            <!-- Étape 1 : LoaderInfo animé -->
+            <div id="loaderInfo" class="loaderInfo"></div>
+            <p>Veuillez patienter pendant le chargement du nuage de points pour un rendu optimal.</p>
+  
+            <!-- Étape 2 : Navigation caméra -->
             <p>Explorez les différentes vues de la visite :</p>
             <img src="https://storage.googleapis.com/projet-potree-sncf/Images/Images_Interface/image-camera.png" alt="Navigation caméra">
             
-            <!-- Image et phrase 3 -->
+            <!-- Étape 3 : Interactions -->
             <p>Découvrez et interagissez avec les éléments interactifs :</p>
             <img src="https://storage.googleapis.com/projet-potree-sncf/Images/Images_Interface/image-interactions.png" alt="Interaction avec éléments">
-            
         </div>
-
+  
         <!-- Bouton pour fermer la popup et commencer la visite -->
         <button id="startGuidedTourBtn">C'est parti !</button>
     </div>
   </div>
-
 
   <!-- Galerie d'images verticale -->
   <div id="verticalGallery">
