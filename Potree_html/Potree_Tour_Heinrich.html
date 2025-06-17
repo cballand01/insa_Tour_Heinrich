@@ -712,6 +712,37 @@
       annotationTexte6.visible = true;
       viewer.scene.annotations.add(annotationTexte6);
 
+      // Annotation texte 7 Zoom (réservoir)
+      let iconInfo7 = $(`<span>
+        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
+      </span>`);
+      let annotationTexte7 = new Potree.Annotation({
+          position: new THREE.Vector3(20.98, 21.87, 10.50),
+          title: iconInfo7, // Ici on met l'élément HTML au lieu du texte
+          description: "À partir du XIXᵉ siècle, un réservoir en métal est installé pour stocker l’eau.",
+          cameraPosition: new THREE.Vector3(21.31, 21.01, 10.50),
+          cameraTarget: new THREE.Vector3(20.75, 21.90, 9.64)
+      });
+      addTextAnnotationClickHandler(annotationTexte7);
+      annotationTexte7.visible = true;
+      viewer.scene.annotations.add(annotationTexte7);
+
+      // Annotation texte 8 Zoom (1e étage)
+      let iconInfo8 = $(`<span>
+        <img src="/Potree_Sncf_Projet/build/potree/resources/icons/info.svg" class="annotation-action-icon" style="filter: invert(1); cursor: pointer;" />
+      </span>`);
+      let annotationTexte8 = new Potree.Annotation({
+          position: new THREE.Vector3(21.42, 19.73, 8.30),
+          title: iconInfo8, // Ici on met l'élément HTML au lieu du texte
+          description: "Le 1er étage a été aménagé au XVIe siècle pour le service des cellules de prison installées à cette époque aux étages supérieurs.",
+          cameraPosition: new THREE.Vector3(23.19, 19.95, 8.16),
+          cameraTarget: new THREE.Vector3(21.42, 19.73, 8.30)
+      });
+      addTextAnnotationClickHandler(annotationTexte8);
+      annotationTexte8.visible = true;
+      viewer.scene.annotations.add(annotationTexte8);
+
+
       //---------------- Annotations imagées ----------------//
       // Annotation Image 1 (Grafitis)
       let iconImage1 = $(`<!-- Icône image pour la première annotation --> 
@@ -934,6 +965,8 @@
           { position: annotationTexte4.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte4 },
           { position: annotationTexte5.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte5 },
           { position: annotationTexte6.position, maxDistance: 3, minGisement: 30, maxGisement: 210, annotation: annotationTexte6 },
+          { position: annotationTexte7.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte7 },
+          { position: annotationTexte8.position, maxDistance: 2, minGisement: 0, maxGisement: 360, annotation: annotationTexte8 },
 
           // Annotations images
           { position: annotationImage1.position, maxDistance: 3, minGisement: 310, maxGisement: 50, annotation: annotationImage1 },  // Gravures
@@ -995,6 +1028,14 @@
       { name: "VUE N°10", position: new THREE.Vector3(18.52, 17.35, 14.39), target: new THREE.Vector3(18.900, 21.49, 14.20), audioId: null },
       { name: "VUE N°11", position: new THREE.Vector3(17.52, 20.06, 13.44), target: new THREE.Vector3(18.30, 20.89, 13.47), audioId: null },
       { name: "VUE N°12", position: new THREE.Vector3(21.01, 22.66, 13.67), target: new THREE.Vector3(19.86, 20.36, 13.48), audioId: null },
+      { name: "VUE N°13", position: new THREE.Vector3(16.98, 20.39, 12.75), target: new THREE.Vector3(17.22, 21.21, 12.06), audioId: null },
+      { name: "VUE N°14", position: new THREE.Vector3(16.57, 21.77, 10.99), target: new THREE.Vector3(19.75, 21.30, 9.70), audioId: null },
+      { name: "VUE N°15", position: new THREE.Vector3(22.25, 22.41, 11.41), target: new THREE.Vector3(19.75, 21.30, 9.70), audioId: null },
+      { name: "VUE N°16", position: new THREE.Vector3(17.33, 22.74, 10.41), target: new THREE.Vector3(18.42, 22.64, 9.45), audioId: null },
+      { name: "VUE N°17", position: new THREE.Vector3(19.15, 23.82, 8.50), target: new THREE.Vector3(20.71, 23.86, 8.37), audioId: null },
+      { name: "VUE N°18", position: new THREE.Vector3(21.22, 24.45, 8.39), target: new THREE.Vector3(19.27, 17.30, 7.95), audioId: null },
+      { name: "VUE N°19", position: new THREE.Vector3(23.19, 19.95, 8.16), target: new THREE.Vector3(15.96, 22.56, 8.12), audioId: null },
+      { name: "VUE N°20", position: new THREE.Vector3(19.94, 20.21, 8.75), target: new THREE.Vector3(19.77, 22.57, 3.53), audioId: null },
       { name: "XXXX", position: new THREE.Vector3(17.94, 18.38, 23.65), target: new THREE.Vector3(19.86, 20.36, 13.48), audioId: null }
     ];
 
