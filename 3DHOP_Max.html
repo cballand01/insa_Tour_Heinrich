@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>3DHOP - 3D Heritage Online Presenter</title>
+  <!--STYLESHEET-->
+  <link type="text/css" rel="stylesheet" href="/Potree_Sncf_Projet/libs/3DHOP/stylesheet/3dhop.css"/>
+
+  <style>
+    /* Styles généraux pour une page blanche */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+    }
+    /* Écran de chargement */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .spinner {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Le viewer est caché au démarrage */
+    #viewer-container {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+    /* Le canvas occupe toute la place du viewer */
+    #draw-canvas {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(24, 31, 33, 1); /* Fond sombre de Potree */
+    }
+    #logo-container {
+      position: fixed; /* Position fixe pour le placer toujours à l'écran */
+      bottom: 10px;    /* Distance du bas de l'écran */
+      left: 10px;      /* Distance du côté gauche de l'écran */
+      z-index: 10000;  /* Assurez-vous que le logo soit au-dessus des autres éléments */
+    }
+
+    #logo {
+      width: 100px;     /* Ajustez la taille du logo */
+      height: auto;    /* Maintient les proportions du logo */
+    }
+
+    @media only screen and (max-width: 768px) {
+      #logo-container {
+        display: none !important;
+      }
+    }
+  </style>
+  <!--SPIDERGL-->
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/spidergl.js"></script>
+  <!--JQUERY-->
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/jquery.js"></script>
+  <!--PRESENTER-->
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/presenter.js"></script>
+  <!--3D MODELS LOADING AND RENDERING-->
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/nexus.js"></script>
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/ply.js"></script>
+  <!--TRACKBALLS-->
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_turntable.js"></script>
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_turntable_pan.js"></script>
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_pantilt.js"></script>
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_sphere.js"></script>
+  <!--UTILITY-->
+  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/init.js"></script>
+</head>
+<body>
+  <!-- Écran de chargement : page blanche avec spinner -->
+  <div id="loading-screen">
+    <div class="spinner"></div>
+    <p>Chargement du modèle...</p>
+  </div>
+  
+  <!-- Conteneur du viewer, caché au démarrage -->
+  <div id="viewer-container">
+    <div id="3dhop" class="tdhop" onmousedown="if(event.preventDefault) event.preventDefault()">
+      <div id="tdhlg"></div>
+      <div id="toolbar">
+        <img id="home"         title="Home"                src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/home.png"         /><br/>
+        <img id="zoomin"       title="Zoom In"             src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/zoomin.png"       /><br/>
+        <img id="zoomout"      title="Zoom Out"            src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/zoomout.png"      /><br/>
+        <!-- Boutons light supprimés -->
+        <img id="perspective"  title="Perspective Camera"  src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/perspective.png" 
+             style="position:absolute; visibility:hidden;"/>
+        <img id="orthographic" title="Orthographic Camera" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/orthographic.png" /><br/>
+        <img id="full_on"      title="Exit Full Screen"    src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/full_on.png" 
+             style="position:absolute; visibility:hidden;"/>
+        <img id="full"         title="Full Screen"         src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/full.png"         />
+      </div>
+      <!-- Un seul canvas pour le rendu -->
+      <canvas id="draw-canvas"></canvas>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var presenter = null;
+    
+    function setup3dhop() {
+      presenter = new Presenter("draw-canvas");
+
+      presenter.setScene({
+        meshes: {
+          "mesh_1": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/stele.nxs" } 
+        },
+        modelInstances: {
+          "model_1": {
+            mesh: "mesh_1",
+            useLighting: false,
+            transform: {
+              matrix: SglMat4.rotationAngleAxis(sglDegToRad(240), [1, 1, 1])
+            }
+          }
+        },
+        trackball: {
+          type: TurntablePanTrackball,
+          trackOptions: {
+            startPhi: 20.0,
+            startTheta: 30.0,
+            startDistance: 1.5,
+            startPanX: 0.0,
+            startPanY: 0.0,
+            startPanZ: 0.0,
+            minMaxPhi: [-180, 180],
+            minMaxTheta: [-180, 180.0],
+            minMaxDist: [0.0, 100],
+            minMaxPanX: [-100, 100],
+            minMaxPanY: [-100, 100],
+            minMaxPanZ: [-100, 100]
+          }
+        }
+      });
+
+      // Dès que le modèle est chargé, masquer l'écran de chargement et afficher le viewer.
+      if (presenter.onSceneLoaded !== undefined) {
+        presenter.onSceneLoaded = function() {
+          document.getElementById("loading-screen").style.display = "none";
+          document.getElementById("viewer-container").style.display = "block";
+        };
+      } else {
+        // Fallback en cas d'absence de callback dédié.
+        setTimeout(function() {
+          document.getElementById("loading-screen").style.display = "none";
+          document.getElementById("viewer-container").style.display = "block";
+        }, 3000);
+      }
+    }
+    
+    function actionsToolbar(action) {
+      if (action == 'home')
+        presenter.resetTrackball();
+      else if (action == 'zoomin')
+        presenter.zoomIn();
+      else if (action == 'zoomout')
+        presenter.zoomOut();
+      else if (action == 'perspective' || action == 'orthographic') {
+        presenter.toggleCameraType();
+        cameraSwitch();
+      } else if (action == 'full' || action == 'full_on')
+        fullscreenSwitch();
+    }
+
+    //Force le navigateur à ne pas afficher le logo SNCF Réseau si c'est un téléphone
+    document.addEventListener("DOMContentLoaded", function(){
+      var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+      if(isMobile){
+        var logo = document.getElementById("logo-container");
+        if(logo) logo.style.display = "none";
+      }
+    });
+    
+    $(document).ready(function(){
+      init3dhop();
+      setup3dhop();
+    });
+  </script>
+</body>
+</html>
