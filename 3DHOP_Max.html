@@ -126,10 +126,18 @@
       presenter.setScene({
         meshes: {
           "mesh_1": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/stele.nxs" } 
+          "mesh_2": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/25.nxs" },
         },
         modelInstances: {
           "model_1": {
             mesh: "mesh_1",
+            useLighting: false,
+            transform: {
+              matrix: SglMat4.rotationAngleAxis(sglDegToRad(240), [1, 1, 1])
+            }
+          }
+          "model_2": {
+            mesh: "mesh_2",
             useLighting: false,
             transform: {
               matrix: SglMat4.rotationAngleAxis(sglDegToRad(240), [1, 1, 1])
