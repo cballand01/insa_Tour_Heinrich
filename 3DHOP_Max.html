@@ -159,7 +159,7 @@
       if (action==='home') presenter.resetTrackball();
       else if (action==='zoomin') presenter.zoomIn();
       else if (action==='zoomout') presenter.zoomOut();
-      else if (action==='perspective'||action==='orthographic') { presenter.toggleCameraType(); }
+      else if (action==='perspective'||action==='orthographic') presenter.toggleCameraType();
       else if (action==='full'||action==='full_on') fullscreenSwitch();
     }
 
@@ -169,38 +169,21 @@
       window.addEventListener('keydown', function(e) {
         if (!e.key.startsWith('Arrow')) return;
         e.preventDefault();
-        // Récupère l'état courant du trackball : [phi, theta, panX, panY, panZ, distance, fovy]
-        var state = presenter.getTrackballPosition();
+        var state = presenter.getTrackballPosition(); // [phi,theta,panX,panY,panZ,dist,fovy]
         switch (e.key) {
-          case 'ArrowUp':
-            // Avancer : diminution de panZ selon l'orientation actuelle
-            state[4] -= step;
-            break;
-          case 'ArrowDown':
-            // Reculer
-            state[4] += step;
-            break;
-          case 'ArrowLeft':
-            // Translation gauche
-            state[2] -= step;
-            break;
-          case 'ArrowRight':
-            // Translation droite
-            state[2] += step;
-            break;
+          case 'ArrowUp':    state[4] -= step; break;
+          case 'ArrowDown':  state[4] += step; break;
+          case 'ArrowLeft':  state[2] -= step; break;
+          case 'ArrowRight': state[2] += step; break;
         }
         presenter.setTrackballPosition(state);
-      });
-    }
-presenter.setTrackballPosition(state);
       });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
       // Masquer logo sur mobile
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
-        var logo = document.getElementById('logo-container');
-        if (logo) logo.style.display = 'none';
+      if (/Android|iPhone|iPad|iPod|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
+        var logo = document.getElementById('logo-container'); if (logo) logo.style.display = 'none';
       }
       init3dhop();
       setup3dhop();
