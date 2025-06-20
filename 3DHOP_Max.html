@@ -125,7 +125,7 @@
 
       presenter.setScene({
         meshes: {
-          "mesh_1": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/stele.nxs" },
+          "mesh_1": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/Stele.nxs" },
           "mesh_2": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/25.nxs" }
         },
         modelInstances: {
@@ -192,31 +192,34 @@
         fullscreenSwitch();
     }
 
-    // Fonction pour déplacer la vue au clavier
+        // Fonction pour déplacer la vue au clavier
     function enableKeyboardPan() {
-      var step = 0.5;  // Ajuster la sensibilité
-      var tb = presenter.getTrackball();
-      if (!tb) return;
-
+      var step = 0.1;  // Ajuster la sensibilité du déplacement
       window.addEventListener('keydown', function(e) {
         if (!e.key.startsWith('Arrow')) return;
         e.preventDefault();
-
+        // Récupère l'état courant du trackball (TurntablePanTrackball = 6 paramètres)
+        var state = presenter.getTrackballPosition();
         switch (e.key) {
-          case 'ArrowUp':
-            tb._panY += step;
+          case 'ArrowUp':    // Pan vertical positif
+            state[3] += step;
             break;
-          case 'ArrowDown':
-            tb._panY -= step;
+          case 'ArrowDown':  // Pan vertical négatif
+            state[3] -= step;
             break;
-          case 'ArrowLeft':
-            tb._panX -= step;
+          case 'ArrowLeft':  // Pan horizontal négatif
+            state[2] -= step;
             break;
-          case 'ArrowRight':
-            tb._panX += step;
+          case 'ArrowRight': // Pan horizontal positif
+            state[2] += step;
             break;
         }
-        presenter.render();
+        // Met à jour la position du trackball instantanément
+        presenter.setTrackballPosition(state);
+      });
+    }
+
+presenter.render();
       });
     }
 
