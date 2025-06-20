@@ -52,97 +52,89 @@
     #draw-canvas {
       width: 100%;
       height: 100%;
-      background-color: rgba(24, 31, 33, 1); /* Fond sombre de Potree */
+      background-color: rgba(24, 31, 33, 1); /* Fond sombre */
     }
     #logo-container {
-      position: fixed; /* Position fixe pour le placer toujours à l'écran */
-      bottom: 10px;    /* Distance du bas de l'écran */
-      left: 10px;      /* Distance du côté gauche de l'écran */
-      z-index: 10000;  /* Assurez-vous que le logo soit au-dessus des autres éléments */
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      z-index: 10000;
     }
-
     #logo {
-      width: 100px;     /* Ajustez la taille du logo */
-      height: auto;    /* Maintient les proportions du logo */
+      width: 100px;
+      height: auto;
     }
-
     @media only screen and (max-width: 768px) {
-      #logo-container {
-        display: none !important;
-      }
+      #logo-container { display: none !important; }
     }
   </style>
   <!--SPIDERGL-->
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/spidergl.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/spidergl.js"></script>
   <!--JQUERY-->
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/jquery.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/jquery.js"></script>
   <!--PRESENTER-->
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/presenter.js"></script>
-  <!--3D MODELS LOADING AND RENDERING-->
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/nexus.js"></script>
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/ply.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/presenter.js"></script>
+  <!--3D MODELS-->
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/nexus.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/ply.js"></script>
   <!--TRACKBALLS-->
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_turntable.js"></script>
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_turntable_pan.js"></script>
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_pantilt.js"></script>
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_sphere.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_turntable.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_turntable_pan.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_pantilt.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/trackball_sphere.js"></script>
   <!--UTILITY-->
-  <script type="text/javascript" src="/Potree_Sncf_Projet/libs/3DHOP/js/init.js"></script>
+  <script src="/Potree_Sncf_Projet/libs/3DHOP/js/init.js"></script>
 </head>
 <body>
-  <!-- Écran de chargement : page blanche avec spinner -->
+  <!-- Écran de chargement -->
   <div id="loading-screen">
     <div class="spinner"></div>
     <p>Chargement du modèle...</p>
   </div>
   
-  <!-- Conteneur du viewer, caché au démarrage -->
+  <!-- Viewer -->
   <div id="viewer-container">
-    <div id="3dhop" class="tdhop" onmousedown="if(event.preventDefault) event.preventDefault()">
+    <div id="3dhop" class="tdhop" onmousedown="event.preventDefault()">
       <div id="tdhlg"></div>
       <div id="toolbar">
-        <img id="home"         title="Home"                src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/home.png"/><br/>
-        <img id="zoomin"       title="Zoom In"             src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/zoomin.png"/><br/>
-        <img id="zoomout"      title="Zoom Out"            src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/zoomout.png"/><br/>
-        <!-- Boutons light supprimés -->
-        <img id="perspective"  title="Perspective Camera"  src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/perspective.png" style="position:absolute; visibility:hidden;"/>
-        <img id="orthographic" title="Orthographic Camera" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/orthographic.png"/><br/>
-        <img id="full_on"      title="Exit Full Screen"    src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/full_on.png" style="position:absolute; visibility:hidden;"/>
-        <img id="full"         title="Full Screen"         src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/refs/heads/main/libs/3DHOP/skins/dark/full.png"/>
+        <img id="home" title="Home" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/home.png"/><br/>
+        <img id="zoomin" title="Zoom In" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/zoomin.png"/><br/>
+        <img id="zoomout" title="Zoom Out" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/zoomout.png"/><br/>
+        <img id="perspective" title="Perspective Camera" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/perspective.png" style="visibility:hidden;"/>
+        <img id="orthographic" title="Orthographic Camera" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/orthographic.png"/><br/>
+        <img id="full_on" title="Exit Full Screen" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/full_on.png" style="visibility:hidden;"/>
+        <img id="full" title="Full Screen" src="https://raw.githubusercontent.com/cballand01/Potree_Sncf_Projet/main/libs/3DHOP/skins/dark/full.png"/>
       </div>
-      <!-- Un seul canvas pour le rendu -->
       <canvas id="draw-canvas"></canvas>
+      <a id="logo-container" href="https://www.sncf-reseau.com/fr" target="_blank">
+        <img id="logo" src="/Potree_Sncf_Projet/build/potree/resources/images/Logo_SNCF.png" alt="Logo SNCF"/>
+      </a>
     </div>
   </div>
 
-  <script type="text/javascript">
+  <script>
     var presenter = null;
-    
-    function setup3dhop() {
-      presenter = new Presenter("draw-canvas");
 
+    function setup3dhop() {
+      presenter = new Presenter('draw-canvas');
       presenter.setScene({
         meshes: {
-          "mesh_1": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/stele.nxs" },
-          "mesh_2": { url: "https://storage.googleapis.com/insa_test/Naours_Maxime/25.nxs" }
+          mesh_1: { url: 'https://storage.googleapis.com/insa_test/Naours_Maxime/Stele.nxs' },
+          mesh_2: { url: 'https://storage.googleapis.com/insa_test/Naours_Maxime/25.nxs' }
         },
         modelInstances: {
-          "model_1": {
-            mesh: "mesh_1",
-            useLighting: true,
+          model_1: { mesh: 'mesh_1', useLighting: true,
             transform: { matrix: SglMat4.rotationAngleAxis(sglDegToRad(240), [1,1,1]) }
           },
-          "model_2": {
-            mesh: "mesh_2",
-            useLighting: false,
+          model_2: { mesh: 'mesh_2', useLighting: false,
             transform: { matrix: SglMat4.rotationAngleAxis(sglDegToRad(240), [1,1,1]) }
           }
         },
         trackball: {
           type: TurntablePanTrackball,
           trackOptions: {
-            startPhi:20.0, startTheta:30.0, startDistance:1.5,
-            startPanX:0.0, startPanY:0.0, startPanZ:0.0,
+            startPhi:20, startTheta:30, startDistance:1.5,
+            startPanX:0, startPanY:0, startPanZ:0,
             minMaxPhi:[-180,180], minMaxTheta:[-180,180],
             minMaxDist:[0,100], minMaxPanX:[-100,100],
             minMaxPanY:[-100,100], minMaxPanZ:[-100,100]
@@ -150,51 +142,69 @@
         }
       });
 
-      if (presenter.onSceneLoaded !== undefined) {
+      if (presenter.onSceneLoaded) {
         presenter.onSceneLoaded = function() {
-          document.getElementById("loading-screen").style.display = "none";
-          document.getElementById("viewer-container").style.display = "block";
+          document.getElementById('loading-screen').style.display = 'none';
+          document.getElementById('viewer-container').style.display = 'block';
         };
       } else {
         setTimeout(function() {
-          document.getElementById("loading-screen").style.display = "none";
-          document.getElementById("viewer-container").style.display = "block";
-        }, 3000);
+          document.getElementById('loading-screen').style.display = 'none';
+          document.getElementById('viewer-container').style.display = 'block';
+        },3000);
       }
     }
-    
+
     function actionsToolbar(action) {
-      if (action == 'home') presenter.resetTrackball();
-      else if (action == 'zoomin') presenter.zoomIn();
-      else if (action == 'zoomout') presenter.zoomOut();
-      else if (action == 'perspective' || action == 'orthographic') {
-        presenter.toggleCameraType(); cameraSwitch();
-      } else if (action == 'full' || action == 'full_on') fullscreenSwitch();
+      if (action==='home') presenter.resetTrackball();
+      else if (action==='zoomin') presenter.zoomIn();
+      else if (action==='zoomout') presenter.zoomOut();
+      else if (action==='perspective'||action==='orthographic') { presenter.toggleCameraType(); }
+      else if (action==='full'||action==='full_on') fullscreenSwitch();
     }
 
     // Fonction pour déplacer la vue au clavier
     function enableKeyboardPan() {
-      var step = 0.1;  // Ajuster la sensibilité
+      var step = 0.5;
       window.addEventListener('keydown', function(e) {
         if (!e.key.startsWith('Arrow')) return;
         e.preventDefault();
-        var state = presenter.getTrackballPosition(); // [phi,theta,panX,panY,dist,fovy]
+        // Récupère l'état courant du trackball : [phi, theta, panX, panY, panZ, distance, fovy]
+        var state = presenter.getTrackballPosition();
         switch (e.key) {
-          case 'ArrowUp':    state[3] += step; break;
-          case 'ArrowDown':  state[3] -= step; break;
-          case 'ArrowLeft':  state[2] -= step; break;
-          case 'ArrowRight': state[2] += step; break;
+          case 'ArrowUp':
+            // Avancer : diminution de panZ selon l'orientation actuelle
+            state[4] -= step;
+            break;
+          case 'ArrowDown':
+            // Reculer
+            state[4] += step;
+            break;
+          case 'ArrowLeft':
+            // Translation gauche
+            state[2] -= step;
+            break;
+          case 'ArrowRight':
+            // Translation droite
+            state[2] += step;
+            break;
         }
         presenter.setTrackballPosition(state);
       });
     }
+presenter.setTrackballPosition(state);
+      });
+    }
 
-    // Masquer le logo SNCF Réseau sur mobile
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener('DOMContentLoaded', function() {
+      // Masquer logo sur mobile
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent)) {
-        var logo = document.getElementById("logo-container"); if (logo) logo.style.display = "none";
+        var logo = document.getElementById('logo-container');
+        if (logo) logo.style.display = 'none';
       }
-      init3dhop(); setup3dhop(); enableKeyboardPan();
+      init3dhop();
+      setup3dhop();
+      enableKeyboardPan();
     });
   </script>
 </body>
