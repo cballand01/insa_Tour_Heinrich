@@ -1,0 +1,35 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Photo Sphere Viewer",
+  "includeVersion": false,
+  "githubPages": false,
+  "cleanOutputDir": false,
+  "excludePrivate": true,
+  "entryPointStrategy": "packages",
+  "readme": ".tmp/typedoc/README.md",
+  "entryPoints": ["packages/*"],
+  "exclude": ["packages/shared"],
+  "validation": {
+    "notExported": false
+  },
+  "navigationLinks": {
+    "Main documentation": "https://photo-sphere-viewer.js.org",
+    "GitHub": "https://github.com/mistic100/Photo-Sphere-Viewer"
+  },
+  "visibilityFilters": {
+    "protected": true,
+    "inherited": false
+  },
+  "favicon": "docs/public/favicon.png",
+  "customCss": "docs/.typedoc/style.css",
+  "externalSymbolLinkMappings": {
+    "typescript": {
+      "Error": "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error",
+      "Event": "https://developer.mozilla.org/docs/Web/API/Event",
+      "EventTarget": "https://developer.mozilla.org/docs/Web/API/EventTarget"
+    },
+    "@types/three": {
+      "*": "https://threejs.org/docs"
+    }
+  }
+}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - equirectangular tiles demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/equirectangular-tiles-adapter": "/dist/equirectangular-tiles-adapter/index.module.js",
+                    "@photo-sphere-viewer/gyroscope-plugin": "/dist/gyroscope-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { EquirectangularTilesAdapter } from '@photo-sphere-viewer/equirectangular-tiles-adapter';
+            import { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const panos = [
+                {
+                    minFov: 30,
+                    options: {
+                        position: {
+                            yaw: 0,
+                            pitch: 0,
+                        },
+                        zoom: 50,
+                        caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                    },
+                    config: {
+                        width: 6656,
+                        cols: 16,
+                        rows: 8,
+                        baseUrl: `${baseUrl}sphere-small.jpg`,
+                        tileUrl: (col, row) => {
+                            if (row === 0 || row === 7) {
+                                return null; // the tile won't be loaded
+                            }
+                            if (col === 8 && row === 4) {
+                                return 'error.jpg';
+                            }
+                            const num = row * 16 + col + 1;
+                            return `${baseUrl}sphere-tiles/image_part_${('000' + num).slice(-3)}.jpg`;
+                        },
+                    },
+                },
+                {
+                    minFov: 10,
+                    options: {
+                        position: {
+                            yaw: '52deg',
+                            pitch: 0,
+                        },
+                        zoom: 20,
+                        caption: "Simon's Town <b>&copy; Greg Zall (HDRI Haven)</b>",
+                    },
+                    config: {
+                        baseUrl: `${baseUrl}sphere-tiles-24k/base.jpg`,
+                        levels: [
+                            {
+                                width: 6144,
+                                cols: 16,
+                                rows: 8,
+                                zoomRange: [0, 30],
+                            },
+                            {
+                                width: 12288,
+                                cols: 32,
+                                rows: 16,
+                                zoomRange: [30, 70],
+                            },
+                            {
+                                width: 24576,
+                                cols: 64,
+                                rows: 32,
+                                zoomRange: [70, 100],
+                            },
+                        ],
+                        tileUrl: (col, row, level) => {
+                            // skip top and bottom tiles on higher resolutions
+                            if (
+                                (level === 1 && (row <= 4 || row >= 14))
+                                || (level === 2 && (row <= 13 || row >= 29))
+                            ) {
+                                return null;
+                            }
+                            if (
+                                (level === 0 && col === 11 && row === 4)
+                                || (level === 1 && col === 22 && row === 8)
+                                || (level === 2 && col === 44 && row === 16)
+                            ) {
+                                return 'error.jpg';
+                            }
+                            return `${baseUrl}sphere-tiles-24k/tile_${level}_${col}_${row}.jpg`;
+                        },
+                    },
+                },
+            ];
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: [EquirectangularTilesAdapter, {
+                    showErrorTile: true,
+                    baseBlur: true,
+                    // debug: true,
+                }],
+                plugins: [GyroscopePlugin],
+                loadingImg: baseUrl + 'loader.gif',
+                navbar: [
+                    'zoom',
+                    {
+                        id: 'custom',
+                        title: 'Change image',
+                        className: 'custom-button',
+                        content: '🔄',
+                        onClick: (() => {
+                            let i = 0;
+
+                            return () => {
+                                i = 1 - i;
+                                loadPanorama(panos[i]);
+                            };
+                        })(),
+                    },
+                    'caption',
+                    'gyroscope',
+                    'fullscreen',
+                ],
+            });
+
+            loadPanorama(panos[0]);
+
+            function loadPanorama(pano) {
+                viewer.setOption('minFov', pano.minFov);
+                return viewer.setPanorama(pano.config, pano.options);
+            }
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

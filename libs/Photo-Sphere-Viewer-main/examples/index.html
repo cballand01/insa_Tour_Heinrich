@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - Demos</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container py-4">
+            <header class="pb-3 mb-4 border-bottom d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="https://photo-sphere-viewer.js.org/favicon.png" height="32" class="me-2 ms-2" />
+                    <span class="fs-4">PhotoSphereViewer - Demos</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="https://photo-sphere-viewer.js.org/" class="fs-5 text-decoration-none">
+                        Documentation
+                    </a>
+                    <a href="https://github.com/mistic100/Photo-Sphere-Viewer" class="me-2 ms-2">
+                        <img src="https://octodex.github.com/images/original.png" height="32" />
+                    </a>
+                </div>
+            </header>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card">
+                        <h5 class="card-header">Adapters</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="adapter-equirectangular.html" class="list-group-item list-group-item-action">Equirectangular</a>
+                            <a href="adapter-equirectangular-tiles.html" class="list-group-item list-group-item-action">Equirectangular Tiles</a>
+                            <a href="adapter-equirectangular-video.html" class="list-group-item list-group-item-action">Equirectangular Video</a>
+                            <a href="adapter-cubemap.html" class="list-group-item list-group-item-action">Cubemap</a>
+                            <a href="adapter-cubemap-tiles.html" class="list-group-item list-group-item-action">Cubemap Tiles</a>
+                            <a href="adapter-cubemap-video.html" class="list-group-item list-group-item-action">Cubemap Video</a>
+                            <a href="adapter-dualfisheye.html" class="list-group-item list-group-item-action">Dual fisheye</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card">
+                        <h5 class="card-header">Plugins</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="plugin-autorotate.html" class="list-group-item list-group-item-action">Autorotate</a>
+                            <a href="plugin-compass.html" class="list-group-item list-group-item-action">Compass</a>
+                            <a href="plugin-gallery.html" class="list-group-item list-group-item-action">Gallery</a>
+                            <a href="plugin-gyroscope-stereo.html" class="list-group-item list-group-item-action">Gyroscope & Stereo</a>
+                            <a href="plugin-map.html" class="list-group-item list-group-item-action">Map</a>
+                            <a href="plugin-markers.html" class="list-group-item list-group-item-action">Markers</a>
+                            <a href="plugin-markers-layers.html" class="list-group-item list-group-item-action">Markers layers</a>
+                            <a href="plugin-markers-cubemap.html" class="list-group-item list-group-item-action">Markers (cubemap)</a>
+                            <a href="plugin-overlays.html" class="list-group-item list-group-item-action">Overlays</a>
+                            <a href="plugin-overlays-cubemap.html" class="list-group-item list-group-item-action">Overlays (cubemap)</a>
+                            <a href="plugin-resolution.html" class="list-group-item list-group-item-action">Resolution</a>
+                            <a href="plugin-plan.html" class="list-group-item list-group-item-action">Plan</a>
+                            <a href="plugin-settings.html" class="list-group-item list-group-item-action">Settings</a>
+                            <a href="adapter-equirectangular-video.html" class="list-group-item list-group-item-action">Video</a>
+                            <a href="plugin-virtual-tour.html" class="list-group-item list-group-item-action">Virtual Tour</a>
+                            <a href="plugin-visible-range.html" class="list-group-item list-group-item-action">Visible Range</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card">
+                        <h5 class="card-header">Misc</h5>
+                        <div class="list-group list-group-flush">
+                            <a href="misc-components.html" class="list-group-item list-group-item-action">Components</a>
+                            <a href="misc-equirectangular-cropped.html" class="list-group-item list-group-item-action">Cropped panorama</a>
+                            <a href="misc-equirectangular-video-cropped.html" class="list-group-item list-group-item-action">Cropped video panorama</a>
+                            <a href="misc-little-planet.html" class="list-group-item list-group-item-action">Little Planet</a>
+                            <a href="misc-transition.html" class="list-group-item list-group-item-action">Transition</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" id="qrcode-container">
+                    <div class="card">
+                        <h5 class="card-header">Remote debug</h5>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">Scan to open on smartphone</h6>
+                            <div id="qrcode"></div>
+                            <p id="qrcode-label" class="card-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "qrcode": "https://esm.run/qrcode"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import * as QRCode from 'qrcode';
+
+            const ip = location.hash.replace('#ip=', '');
+            if (ip) {
+                const addr = `${location.protocol}//${ip}:${location.port}`;
+
+                QRCode.toCanvas(addr, { margin: 0, scale: 8 }, (error, canvas) => {
+                    document.querySelector('#qrcode').appendChild(canvas);
+                    document.querySelector('#qrcode-label').innerText = addr;
+                });
+            } else {
+                document.querySelector('#qrcode-container').remove();
+            }
+        </script>
+    </body>
+</html>

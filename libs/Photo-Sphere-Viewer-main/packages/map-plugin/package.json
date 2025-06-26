@@ -1,0 +1,29 @@
+{
+  "name": "@photo-sphere-viewer/map-plugin",
+  "version": "0.0.0",
+  "description": "Photo Sphere Viewer plugin to add a minimap with the panorama location.",
+  "homepage": "https://photo-sphere-viewer.js.org/plugins/map.html",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "keywords": [
+    "plan",
+    "cartography"
+  ],
+  "dependencies": {
+    "@photo-sphere-viewer/core": "0.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "instrument": "nyc instrument dist/index.module.js .",
+    "lint": "tsc --noEmit && eslint . --fix && stylelint \"src/**/*.scss\" --fix",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "npm-link": "cd dist && npm link"
+  },
+  "psv": {
+    "title": "Photo Sphere Viewer / Map Plugin",
+    "style": true,
+    "budget": "50kb"
+  }
+}

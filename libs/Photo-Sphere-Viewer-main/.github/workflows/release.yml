@@ -1,0 +1,63 @@
+name: release
+run-name: Release ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    if: ${{ github.repository == 'mistic100/Photo-Sphere-Viewer' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: setup
+        uses: ./.github/workflows/shared/setup
+        with:
+          turbo-cache: 'false'
+
+      - name: build
+        run: |
+          yarn ci:version ${{ github.ref_name }}
+          yarn ci:build
+
+      - name: package
+        run: |
+          PREVIOUS_TAG=$(git tag --sort=-committerdate | sed -n '2 p')
+          echo '📂 prepare'
+          node ./build/prepare-package.mjs
+          echo '📦 archive'
+          (cd dist && zip -r photo-sphere-viewer-${{ github.ref_name }}.zip .)
+          echo '📄 changelog'
+          git log --pretty=format:"%s" $PREVIOUS_TAG...${{ github.ref_name }} | node ./build/generate-changelog.mjs $PREVIOUS_TAG ${{ github.ref_name }} > dist/changelog_${{ github.ref_name }}.md
+
+      - name: create release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          body_path: dist/changelog_${{ github.ref_name }}.md
+          files: dist/photo-sphere-viewer-${{ github.ref_name }}.zip
+
+      - name: npm publish
+        run: |
+          yarn ci:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NPM_TAG: latest
+
+      - name: update issue templates
+        run: |
+          git fetch origin main --depth 1
+          git checkout main
+          node ./build/update-issue-templates.mjs ${{ github.ref_name }}
+          git stage .github/ISSUE_TEMPLATE
+          git config --global user.email "noreply@github.com"
+          git config --global user.name "github-actions"
+          git commit -m "chore: add ${{ github.ref_name }} to issue templates"
+          git push

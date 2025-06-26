@@ -1,0 +1,10 @@
+{
+  "name": "@photo-sphere-viewer/build",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint . --fix",
+    "test": "mocha \"tests/**/*.spec.mjs\""
+  }
+}

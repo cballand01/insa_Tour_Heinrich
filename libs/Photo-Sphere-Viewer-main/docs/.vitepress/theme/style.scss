@@ -1,0 +1,201 @@
+@use 'vuetify' with (
+  $color-pack: false,
+  $utilities: false,
+);
+
+:root {
+  --vp-c-default-1: var(--vp-c-gray-1);
+  --vp-c-default-2: var(--vp-c-gray-2);
+  --vp-c-default-3: var(--vp-c-gray-3);
+  --vp-c-default-soft: var(--vp-c-gray-soft);
+
+  // Colors for Vuetify material palette
+  --vp-c-brand-1: #039BE5; // darken1
+  --vp-c-brand-2: #03A9F4; // base
+  --vp-c-brand-3: #039BE5; // darken1
+  --vp-c-brand-soft: color-mix(in srgb, #03A9F4 20%, transparent); // base
+
+  --vp-c-tip-1: var(--vp-c-green-1);
+  --vp-c-tip-2: var(--vp-c-green-2);
+  --vp-c-tip-3: var(--vp-c-green-3);
+  --vp-c-tip-soft: var(--vp-c-green-soft);
+
+  --vp-c-warning-1: var(--vp-c-yellow-1);
+  --vp-c-warning-2: var(--vp-c-yellow-2);
+  --vp-c-warning-3: var(--vp-c-yellow-3);
+  --vp-c-warning-soft: var(--vp-c-yellow-soft);
+
+  --vp-c-danger-1: var(--vp-c-red-1);
+  --vp-c-danger-2: var(--vp-c-red-2);
+  --vp-c-danger-3: var(--vp-c-red-3);
+  --vp-c-danger-soft: var(--vp-c-red-soft);
+}
+
+.dark {
+  --vp-c-brand-1: #0277BD; // darken3
+  --vp-c-brand-2: #039BE5; // darken1
+  --vp-c-brand-3: #0277BD; // darken3
+  --vp-c-brand-soft: color-mix(in srgb, #01579B 20%, transparent); // darken4
+}
+
+/**
+ * Component: Home
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #9CCC65 20%, #29B6F6);
+}
+
+.dark {
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #8BC34A 20%, #03A9F4);
+}
+
+/**
+ * Component: Custom Block
+ * -------------------------------------------------------------------------- */
+
+.custom-block.module {
+  --vp-custom-block-tip-border: 1px;
+  --vp-custom-block-tip-border: var(--vp-c-brand-3);
+  --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
+  --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
+
+  a {
+    color: var(--vp-c-brand-1);
+  }
+
+  p:first-of-type {
+    margin-top: 0;
+  }
+}
+
+/**
+ * Vitepress Overrides
+ * -------------------------------------------------------------------------- */
+
+:root {
+  --vp-layout-max-width: 1620px;
+}
+
+.content-container {
+  max-width: none !important;
+}
+
+.VPHome>* {
+  z-index: 10;
+  position: relative;
+}
+
+.VPHero .name {
+  filter: drop-shadow(0px 0px 10px rgb(60, 60, 67));
+  max-width: none;
+}
+
+.VPHero .text {
+  filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.42));
+  max-width: none;
+
+  @media (min-width: 640px) {
+    font-size: 32px;
+  }
+
+  @media (min-width: 960px) {
+    font-size: 48px;
+  }
+}
+
+.VPFeatures {
+  opacity: 0.8;
+}
+
+.vp-doc h4 {
+  margin-top: 3rem;
+}
+
+.vp-doc h2+h4,
+.vp-doc h3+h4 {
+  margin-top: 2rem;
+}
+
+
+/**
+ * Vuetify Overrides
+ * -------------------------------------------------------------------------- */
+
+.v-icon svg {
+  fill: currentColor;
+}
+
+.v-slider-track__tick-label {
+  font-size: 12px;
+}
+
+.v-row.no-v-gutters {
+  margin-top: 0;
+  margin-bottom: 0;
+
+  .v-col {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.v-card {
+  display: flex;
+  flex-direction: column;
+
+  .v-tabs {
+    flex: none;
+  }
+}
+
+.v-file-input .v_field__input {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+}
+
+/**
+ * Sponsors
+ * -------------------------------------------------------------------------- */
+
+.sponsors {
+  text-align: center;
+}
+
+.sponsors p {
+  display: inline-block;
+}
+
+.sponsors a {
+  display: inline-block;
+  margin: 0 0.5em;
+}
+
+/**
+ * Options properties
+ * -------------------------------------------------------------------------- */
+
+h4:not(.release-subtitle)+ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+    margin-top: 10px;
+    padding: 0.2em 0.5em;
+    font-size: 0.8rem;
+    border: 1px solid var(--vp-c-border);
+    border-radius: 3px;
+  }
+
+  code {
+    padding: 0 0.3rem;
+  }
+}

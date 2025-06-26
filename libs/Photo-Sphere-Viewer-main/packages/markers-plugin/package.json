@@ -1,0 +1,31 @@
+{
+  "name": "@photo-sphere-viewer/markers-plugin",
+  "version": "0.0.0",
+  "description": "Photo Sphere Viewer plugin to display various markers/hotspots on the viewer.",
+  "homepage": "https://photo-sphere-viewer.js.org/plugins/markers.html",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "keywords": [
+    "video",
+    "svg",
+    "polygon",
+    "green-screen"
+  ],
+  "dependencies": {
+    "@photo-sphere-viewer/core": "0.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "instrument": "nyc instrument dist/index.module.js .",
+    "lint": "tsc --noEmit && eslint . --fix && stylelint \"src/**/*.scss\" --fix",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "npm-link": "cd dist && npm link"
+  },
+  "psv": {
+    "title": "Photo Sphere Viewer / Markers Plugin",
+    "style": true,
+    "budget": "90kb"
+  }
+}

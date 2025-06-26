@@ -1,0 +1,1296 @@
+/* On force la page à occuper tout l’écran sans scroll */
+html, body {
+  margin: 0;               /* Pas de marge autour du document */
+  padding: 0;              /* Pas de padding interne */
+  width: 100%;             /* Pleine largeur */
+  height: 100%;            /* Pleine hauteur */
+  overflow: hidden;        /* Bloque tout débordement (pas de barre de scroll) */
+  background-color: #1e2b34; /* Fond foncé pendant le chargement */
+  font-family: 'Roboto', Arial, sans-serif; /* Police par défaut */
+}
+
+/* Conteneur plein écran pour le splash, devant tout le reste */
+#splash {
+  position: fixed;         /* Fixe à l’écran, même lors du scroll */
+  top: 0;                  /* Bord supérieur de la fenêtre */
+  left: 0;                 /* Bord gauche de la fenêtre */
+  width: 100%;             /* Pleine largeur */
+  height: 100%;            /* Pleine hauteur */
+  background-color: #1e2b34; /* Même fond que le body pour homogénéité */
+  z-index: 10000;          /* Toujours devant tous les autres éléments */
+  display: flex;           /* Active Flexbox pour centrer le loader */
+  align-items: center;     /* Centre verticalement */
+  justify-content: center; /* Centre horizontalement */
+}
+
+/* Style du cercle animé */
+.loader {
+  border: 16px solid #f3f3f3;       /* Anneau épais couleur claire */
+  border-top: 16px solid #3498db;   /* Secteur coloré pour l’effet de rotation */
+  border-radius: 50%;               /* Cercle parfait */
+  width: 120px;                     /* Diamètre fixe */
+  height: 120px;                    /* Diamètre fixe */
+  animation: spin 2s linear infinite; /* Animation de rotation continue */
+}
+
+/* Définition de l’animation spin */
+@keyframes spin {
+  0%   { transform: rotate(0deg); }    /* Début sans rotation */
+  100% { transform: rotate(360deg); }  /* Tour complet */
+}
+
+.potree_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Zone Potree */
+#verticalGallery {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 3000;
+}
+.galleryItem {
+  cursor: pointer;
+  width: 100px;
+  height: 100px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: none;
+}
+.galleryItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.9);
+}
+.galleryItem:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Bulle globale pour le titre */
+#globalTitleBubble {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 20px;
+  white-space: nowrap;
+  display: none;
+  z-index: 3100;
+}
+#globalTitleBubble::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid rgba(0, 0, 0, 0.7);
+}
+
+/* Flèche dans la galerie */
+.arrow {
+  color: #dadada;
+  font-size: 30px;
+  cursor: pointer;
+  margin: 5px;
+  user-select: none;
+  transition: transform 0.3s ease;
+}
+
+.arrow:active {
+  animation: clickPulse 0.3s ease-out; /* Ajout de l'animation pour le clic */
+  transform: scale(0.6);
+}
+
+/* Popup pour images */
+#imagePopup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+
+  /* Centrer le conteneur blanc */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* on retire le padding pour un vrai centrage */
+}
+#popupContent {
+  background: #fff;
+  border-radius: 8px;
+
+  /* On laisse la largeur s'adapter au contenu, 
+     tout en imposant des limites max pour éviter le débordement */
+  width: auto;
+  max-width: 90vw;
+  max-height: 90vh;
+
+  text-align: center;
+  position: relative;
+  padding: 20px; /* marge blanche autour de l'image */
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.closePopup {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: #fff;
+  background-color: #000;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 10000;
+}
+.closePopup:hover {
+  background-color: #444;
+}
+#popupImage {
+  /* On enlève width:100% pour laisser l'image se dimensionner 
+     et on limite seulement sa taille max pour qu'elle s'adapte */
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+  margin-bottom: 15px;
+
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+#popupText {
+  color: #000;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Fenêtre de bienvenue améliorée */
+#welcomePopup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8); /* Fond légèrement moins opaque */
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out; /* Animation d'apparition */
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#welcomePopupContent {
+  background: #fff;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  position: relative;
+}
+
+/* Titres et texte de la popup */
+#welcomePopupContent h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+#welcomePopupContent p {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+/* Empiler les boutons verticalement dans la popup de bienvenue */
+#welcomePopupContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#welcomePopupContent button {
+  display: block;
+  width: 80%;        /* Ajuste cette valeur selon tes besoins */
+  margin: 10px 0;    /* Espacement vertical entre les boutons */
+}
+
+/* Bouton principal pour lancer la visite guidée */
+#welcomePopupContent button {
+  background: linear-gradient(145deg, #9c0390, #e10b0b);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  margin: 10px 0;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#welcomePopupContent #btnExpert {
+  background: #fff; /* Fond blanc */
+  color: #000;      /* Texte en noir pour le contraste (ajustez selon vos besoins) */
+}
+
+
+#welcomePopupContent button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+}
+
+/* Lien cliquable pour explorer librement */
+#welcomePopupContent a {
+  display: inline-block;
+  margin-top: 10px;
+  color: #3498db;
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+#welcomePopupContent a:hover {
+  color: #1d6fa5;
+}
+
+
+#endGuidedPopup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;
+  padding: 20px;
+}
+
+#endGuidedPopupContent {
+  background: #fff;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#endGuidedPopupContent h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+#endGuidedPopupContent p {
+  color: #555;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+#endGuidedPopupContent button {
+  display: block;
+  width: 80%;
+  margin: 10px 0;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+}
+
+#btnExploreFreely {
+  background: linear-gradient(145deg, #9c0390, #e10b0b);
+  color: #fff;
+}
+
+#btnRestartTour {
+  background: #fff;
+  color: #000;
+  border: 2px solid #ccc;
+}
+
+#endGuidedPopupContent button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+}
+
+
+/* Popup d'instructions */
+#instructionsPopup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);  /* Fond légèrement transparent */
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.5s ease-in-out;  /* Animation d'apparition */
+  padding: 0px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Contenu de la popup */
+#instructionsPopupContent {
+  background: #fff;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  padding: 30px;
+  text-align: left;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Centrer le contenu à l'intérieur */
+  justify-content: center;  /* Centrer le contenu à l'intérieur */
+  margin: auto;  /* Utiliser auto pour centrer le contenu horizontalement et verticalement */
+  margin-top : 80px;
+}
+
+#instructionsPopupContent h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+/* Style des images dans la popup */
+#popupImagesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;  /* Espacement entre les images */
+  width: 100%;
+}
+
+#popupImagesContainer img {
+  width: 100%;  /* Prendre toute la largeur du conteneur */
+  max-width: 400px;  /* Limiter la largeur des images */
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
+/* Bouton "C'est parti !" */
+#startGuidedTourBtn {
+  background: linear-gradient(145deg, #9c0390, #e10b0b);  /* Couleur similaire au bouton "Visite guidée" */
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 20px;
+}
+
+#startGuidedTourBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+
+/* Popup pour vidéo */
+#videoPopup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+#videoPopupContent {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 800px;
+  width: 90%;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+.closeVideoPopup {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: #fff;
+  background-color: #000;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 10000;
+}
+.closeVideoPopup:hover {
+  background-color: #444;
+}
+#popupVideo {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+#videoPopupText {
+  color: #000;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Popup pour instructions */
+#instructionPopup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+#instructionPopupContent {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 90%;
+  padding: 20px;
+  text-align: left;
+  position: relative;
+}
+.closeInstructionPopup {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: #fff;
+  background-color: #000;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  z-index: 10000;
+}
+.closeInstructionPopup:hover {
+  background-color: #444;
+}
+#instructionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.instructionRow {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.instructionImage {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+}
+.instructionText h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+.instructionText p {
+  margin: 5px 0 0 0;
+  font-size: 1em;
+}
+
+/* Slidebar */
+#slidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 350px;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(45, 62, 80, 0.95), rgba(28, 37, 48, 0.95));
+  color: #ecf0f1;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 2900;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+#slidebar.open {
+  transform: translateX(0);
+}
+#slidebarToggle {
+  position: absolute;
+  top: 10px;
+  right: -40px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+#slidebarToggle img {
+  width: 40px;
+  height: 40px;
+}
+.slidebar-header {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.slidebar-header a {
+  color: #aab7b8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.slidebar-version {
+  color: #ccc;
+  font-size: 12px;
+}
+.slidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px 20px;
+  text-align: justify;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+.slidebar-logo {
+  /* Contrôle des espacements verticaux (au-dessus et en dessous) */
+  margin-top: 20px;
+  margin-bottom: 30px;
+  /* Pour s'assurer que le conteneur occupe la largeur complète
+     et permette le centrage de l'image par margin auto */
+  width: 100%;
+}
+.slidebar-logo img {
+  display: block;
+  width: 150px;  /* ou la taille que vous voulez */
+  height: auto;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #7f8c8d;
+}
+.accordion-header {
+  padding: 15px 0;
+  font-size: 1.1em;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.accordion-header::after {
+  content: "\25BC";
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+.accordion-header.active::after {
+  transform: rotate(-180deg);
+}
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.accordion-content p {
+  margin: 10px 0;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+/* Conteneur d'actions */
+#splat_buttons {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 6px;
+}
+#splat_buttons button {
+  background: linear-gradient(145deg, #9c0390, #e10b0b);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#splat_buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+/* Slider du budget de points */
+#pointBudgetContainer {
+  text-align: center;
+  color: #fff;
+  font-size: 11px;
+}
+#pointBudgetContainer input[type="range"] {
+  width: 100%;
+  margin-top: 5px;
+}
+/* Position de la caméra */
+#cameraPosition {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+/* Icône caméra bien petite, alignée sur le même axe que le texte */
+#cameraPosition .camera-icon {
+  height: 16px;        /* passe à 16px de haut */
+  width: auto;         /* garde les proportions */
+  margin-right: 4px;
+  /* transforme toute couleur en blanc */
+  filter: brightness(0) invert(1);
+}
+
+/* Conteneur boutons caméra */
+#buttonAndCameraContainer {
+  position: fixed;
+  top: 60px;
+  left: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2000;
+}
+#buttonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.buttonFrame {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.buttonFrame img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Logo SNCF */
+#logo {
+  width: 120px;
+}
+
+/* Tooltips */
+.tooltip-container {
+  position: relative;
+}
+.custom-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 6px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+.tooltip-container:hover .custom-tooltip {
+  opacity: 1;
+}
+/* Assurer que les tooltips dans les boutons flèche soient en blanc */
+.arrow-button .custom-tooltip {
+  color: #fff;
+}
+.custom-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.75) transparent transparent transparent;
+}
+.tooltip-right .custom-tooltip {
+  bottom: auto;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  margin-left: 6px;
+  margin-bottom: 0;
+}
+.tooltip-right .custom-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent rgba(0, 0, 0, 0.75) transparent transparent;
+}
+
+/* Barre de visite guidée */
+.hotspot-controls-bar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  background-color: rgba(0,0,0,0.7);
+  border: 2px solid #3498db;
+  border-radius: 20px;
+  padding: 10px 20px;
+  z-index: 5000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+/* Boutons flèche */
+.arrow-button {
+  cursor: pointer;
+  padding: 10px;
+  margin: 0 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+.arrow-button img {
+  filter: brightness(0) saturate(100%) invert(26%) sepia(87%) saturate(482%) hue-rotate(184deg) brightness(92%) contrast(88%);
+}
+.arrow-button:hover {
+  transform: scale(1.1);
+}
+/* Label central (bouton de visite guidée) */
+.hotspot-label {
+  font-size: 20px;
+  color: #fff;
+  font-weight: bold;
+  margin: 0 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Liste déroulante des hotspots - cachée par défaut */
+.hotspot-list {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #000;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  display: none;
+}
+/* Classe pour afficher la liste */
+.hotspot-list.active {
+  display: block;
+}
+.hotspot-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.hotspot-list li {
+  margin: 10px 0;
+}
+.hotspot-list li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+.hotspot-list li a:hover {
+  text-decoration: underline;
+}
+
+/* Forcer les annotations Potree à être au-dessus et actives */
+.annotation,
+.potree_annotation {
+  z-index: 7000 !important;
+  pointer-events: auto !important;
+}
+
+/* Barre de son ajoutée pour gérer les audios et le seek */
+#audioBar {
+  position: fixed;
+  bottom: 140px; /* Ajustez la position verticale si nécessaire */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;  /* Moins d'espace pour une barre plus petite */
+  border-radius: 5px;
+  z-index: 6000;
+  display: flex;
+  align-items: center;
+  gap: 5px;  /* Réduction de l'espacement entre les éléments */
+}
+
+#audioBar input[type="range"] {
+  width: 150px; /* Réduit la largeur du slider */
+}
+
+#audioBar button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+#pauseResumeButton {
+  position: fixed;
+  bottom: 20px; /* Espace à partir du bas de l'écran */
+  left: 20px; /* Espace à partir du bord gauche de l'écran */
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#pauseResumeButton:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Style pour le logo positionné en bas à droite */
+#logo {
+    position: absolute;
+    bottom: 10px;  /* 10 pixels du bord inférieur */
+    right: 10px;   /* 10 pixels du bord droit */
+    width: 100px;  /* Ajustez la largeur selon vos besoins */
+    z-index: 1000; /* S'assure que le logo est au-dessus des autres éléments */
+  }
+
+#potree_languages {
+  display: none !important;
+}
+
+  #menu_filters,
+#menu_filters + div {
+    display: none !important;
+}
+
+.oriented-exit-btn {
+    background: linear-gradient(145deg, #9c0390, #e10b0b);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 20px;
+    position: relative; /* Change this to ensure translation works */
+    z-index: 10000;
+  }
+  
+  .oriented-exit-btn:hover {
+    transform: translateY(-2px); /* Apply the translation effect */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Nouveau style pour les flèches, avec SVG */
+#orientedControlsContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* Flèche haut */
+.elUp {
+  position: absolute;
+  top: 120px; /* Ajustez la position */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  pointer-events: auto;
+}
+
+.elRight {
+  position: absolute;
+  top: 50%;
+  right: 240px; /* Ajustez la position */
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  pointer-events: auto;
+}
+
+.elDown {
+  position: absolute;
+  bottom: 100px; /* Ajustez la position */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  pointer-events: auto;
+}
+
+.elLeft {
+  position: absolute;
+  top: 50%;
+  left: 220px; /* Ajustez la position */
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  pointer-events: auto;
+}
+#splat_buttons {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch; /* Les boutons prennent toute la largeur */
+}
+
+#textAnnotationPopupCustom {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 30px 20px 20px 20px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 80%;
+        z-index: 10000;
+        font-family: 'Roboto', Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        text-align: justify;
+        position: relative;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+#closeTextAnnotationPopupCustom {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        color: black;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 18px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+#closeTextAnnotationPopupCustom:hover {
+        background-color: #ddd;
+}
+
+.popupArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 50px;
+  color: #dadada;
+  cursor: pointer;
+  user-select: none;
+  z-index: 10001;
+  display: none;
+  transition: transform 0.3s ease;
+}
+.popupArrow.left {
+  left: 20px;
+}
+
+.popupArrow.right {
+  right: 20px;
+}
+
+.popupArrow:active {
+  animation: clickPulse 0.3s ease-out;
+  transform: scale(0.6) translateY(-50%);
+}
+
+/* =========================
+   POP-UP INFOS CONNEXION
+   ========================= */
+
+#wifiPopup{
+  /* même overlay que #instructionsPopup */
+  display:none;                               /* masquée par défaut – contrôlé en JS */
+  position:fixed; top:0; left:0;
+  width:100vw; height:100vh;
+  background:rgba(0,0,0,.8);                  /* voile sombre */
+  z-index:9998;                               /* juste sous les annotations (10000) */
+  justify-content:center; align-items:center; /* centrage flex */
+  padding:0;                                  /* pas de marge interne */
+  animation:fadeIn .5s ease-in-out;           /* même anim’ d’apparition */
+}
+
+#wifiPopupContent{
+  /* même « carton » que #instructionsPopupContent mais un peu plus étroit */
+  background:#fff;
+  border-radius:10px;
+  max-width:420px; width:90%;                 /* largeur raisonnable pour mobile */
+  padding:30px 25px;
+  text-align:center;
+  box-shadow:0 10px 20px rgba(0,0,0,.25);
+  position:relative;                          /* pour le bouton × absolu */
+  display:flex; flex-direction:column;        /* empile le texte + jauge */
+  align-items:center; justify-content:center;
+}
+
+#wifiPopup h3{
+  margin:0 0 .5rem; font-size:1.3rem; color:#333;
+}
+#wifiPopup p{
+  margin:0 0 1rem; font-size:.95rem; color:#555;
+}
+
+/* bouton de fermeture – même look que .closeInstructionPopup */
+.closeWifiPopup{
+  position:absolute; top:10px; right:15px;
+  width:30px; height:30px;
+  font-size:24px; font-weight:bold;
+  color:#fff; background:#000;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:background-color .2s;
+  z-index:10000;
+}
+.closeWifiPopup:hover{ background:#444; }
+
+/* jauge = déjà stylée dans ton HTML, 
+   on centre simplement l’ensemble si nécessaire */
+#wifiPopup .gauge-container{ width:100%; }
+
+/* mini-rappel de l’animation utilisée plus haut */
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+
+/* ================================
+ Styles pour la popup de performance
+ ================================ */
+
+/* Overlay générique pour les popups “.custom-popup” */
+.custom-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;               /* caché par défaut */
+  align-items: center;         /* centre verticalement */
+  justify-content: center;     /* centre horizontalement */
+  background: rgba(0, 0, 0, 0.5); /* voile sombre */
+  z-index: 10001;              /* au-dessus de tout le reste */
+  padding: 20px;               /* un peu d’air autour */
+  box-sizing: border-box;
+}
+
+/* Contenu de la popup */
+.custom-popup-content {
+  background: #fff;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  position: relative;
+}
+
+/* Bouton de fermeture rond noir avec croix blanche */
+.custom-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background-color: #000;     /* rond noir */
+  color: #fff;                /* croix blanche */
+  border: none;
+  border-radius: 50%;         /* cercle parfait */
+  display: flex;
+  align-items: center;
+  justify-content: center;    /* centre la croix */
+  font-size: 18px;            /* taille de la croix */
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10002;
+}
+
+.custom-popup-close:hover {
+  background-color: #333;     /* léger éclaircissement au survol */
+}
+
+/* Titre et paragraphe */
+.custom-popup-content h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+.custom-popup-content p {
+  margin: 1rem 0 1.5rem;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Bouton “J’ai compris” */
+#performanceOkBtn {
+  background: linear-gradient(145deg, #9c0390, #e10b0b);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#performanceOkBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+/* Remplace la .loader classique par un cercle “respirant” */
+.pulse-loader {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #9c0390;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+/* Animation “battement” */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+

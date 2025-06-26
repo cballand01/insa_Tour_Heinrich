@@ -1,0 +1,32 @@
+.tsd-parameter {
+    border: 1px solid var(--color-accent);
+    list-style: none;
+}
+
+.tsd-parameter > h5 {
+    margin: 0;
+    padding: 10px;
+    background: var(--color-background-secondary);
+}
+
+.tsd-parameter:not(:first-child) {
+    border-top: none;
+}
+
+.tsd-parameter .tsd-comment {
+    padding: 10px;
+}
+
+.tsd-parameter .tsd-comment h3 {
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+.tsd-parameter .tsd-comment h3:after {
+    content: ': ';
+}
+
+.tsd-parameter .tsd-comment h3 + p {
+    display: inline-block;
+}

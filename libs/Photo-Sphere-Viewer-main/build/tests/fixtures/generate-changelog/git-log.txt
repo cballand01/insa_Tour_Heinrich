@@ -1,0 +1,22 @@
+Fix #1329 virtual-tour: cannot click on arrows
+Fix #1326 markers: update marker failed when not in view
+Read additional XMP data
+Close #1288 dual fisheye adapter
+Fix overlays: export model
+chore(deps-dev): bump stylelint from 15.11.0 to 16.2.1 (#1247)
+chore(deps-dev): bump tsup from 8.0.1 to 8.1.0 (#1321)
+doc: add marker elementLayer demo
+Close #1163 virtual-tour: new arrows
+Close #1118 markers: add new "elementLayer" type
+chore(deps): bump three and @types/three (#1320)
+chore: new interactive server:filter command
+chore(deps-dev): bump turbo to 1.13.3 (#1310)
+chore(deps-dev): bump esbuild-sass-plugin from 3.2.0 to 3.3.0 (#1312)
+chore(deps-dev): bump mocha and @types/mocha (#1309)
+chore(deps-dev): bump sort-package-json from 2.8.0 to 2.10.0 (#1311)
+chore(deps-dev): bump esbuild-sass-plugin from 3.1.0 to 3.2.0 (#1269)
+Remove LittlePlanetAdapter
+chore(deps): bump three to 0.164.0
+chore(deps-dev): bump eslint & typescript-eslint (#1256)
+chore(deps-dev): bump typescript from 5.3.3 to 5.4.5 (#1286)
+chore: add 5.7.4 to issue templates

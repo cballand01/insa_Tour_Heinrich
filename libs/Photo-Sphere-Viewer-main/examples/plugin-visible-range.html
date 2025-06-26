@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - visible range demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/autorotate-plugin": "/dist/autorotate-plugin/index.module.js",
+                    "@photo-sphere-viewer/visible-range-plugin": "/dist/visible-range-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { AutorotatePlugin } from '@photo-sphere-viewer/autorotate-plugin';
+            import { VisibleRangePlugin } from '@photo-sphere-viewer/visible-range-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere-cropped.jpg', // this file has XMP data
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                defaultZoomLvl: 30,
+                navbar: [
+                    'autorotate',
+                    {
+                        content: 'Clear range',
+                        className: 'custom-button',
+                        onClick: () => {
+                            visibleRange.setHorizontalRange(null);
+                            visibleRange.setVerticalRange(null);
+                        },
+                    },
+                    {
+                        content: 'Set custom range',
+                        className: 'custom-button',
+                        onClick: () => {
+                            visibleRange.setHorizontalRange([-Math.PI / 2, Math.PI / 2]);
+                            visibleRange.setVerticalRange([-Math.PI / 3, Math.PI / 3]);
+                        },
+                    },
+                    {
+                        content: 'Set range from panoData',
+                        className: 'custom-button',
+                        onClick: () => {
+                            visibleRange.setRangesFromPanoData();
+                        },
+                    },
+                    'caption',
+                    'fullscreen',
+                ],
+                plugins: [
+                    AutorotatePlugin,
+                    [VisibleRangePlugin, {
+                        usePanoData: true,
+                    }],
+                ],
+            });
+
+            const visibleRange = viewer.getPlugin(VisibleRangePlugin);
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

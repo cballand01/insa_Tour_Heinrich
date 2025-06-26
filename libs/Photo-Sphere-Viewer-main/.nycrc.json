@@ -1,0 +1,6 @@
+{
+    "report-dir": "./cypress/reports",
+    "reporter": ["@lcov-viewer/istanbul-report"],
+    "exclude": ["icons/**"],
+    "excludeAfterRemap": true
+}

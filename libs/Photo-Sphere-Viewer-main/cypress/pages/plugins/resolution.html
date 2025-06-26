@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/settings-plugin/index.css" />
+        <link rel="stylesheet" href="/style.css" />
+
+        <style>
+            /* inconsistent behavior in Cypress */
+            .psv-settings *:focus-visible {
+                outline: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/resolution-plugin": "/dist/resolution-plugin/index.module.js",
+                    "@photo-sphere-viewer/settings-plugin": "/dist/settings-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { ResolutionPlugin } from '@photo-sphere-viewer/resolution-plugin';
+            import { SettingsPlugin } from '@photo-sphere-viewer/settings-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: urlParams.get('withPanorama') ? baseUrl + 'sphere-small.jpg' : null,
+                plugins: [
+                    SettingsPlugin,
+                    [ResolutionPlugin, {
+                        showBadge: urlParams.get('showBadge') !== 'false',
+                        defaultResolution: urlParams.get('resolution'),
+                        resolutions: [
+                            {
+                                id: 'SD',
+                                label: 'Small',
+                                panorama: baseUrl + 'sphere-small.jpg',
+                            },
+                            {
+                                id: 'HD',
+                                label: 'Normal',
+                                panorama: baseUrl + 'sphere-small.jpg?hd',
+                            },
+                        ],
+                    }],
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>
